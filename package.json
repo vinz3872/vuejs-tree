@@ -1,0 +1,15 @@
+{
+  "name": "vuejs-tree",
+  "description": "A highly customizable vuejs tree",
+  "version": "1.0.0",
+  "main": "index.js",
+  "keywords": [ "vuejs", "tree", "custom" ],
+  "files": [
+    "index.js",
+    "components/*.vue"
+  ],
+  "repository": "git@github.com:scalia/vuejs-tree.git",
+  "bugs": "git@github.com:scalia/vuejs-tree/issues",
+  "author": "vinz3872 <vinz3872@gmail.com>",
+  "license": "MIT"
+}
