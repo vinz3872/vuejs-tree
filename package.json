@@ -1,12 +1,16 @@
 {
   "name": "vuejs-tree",
   "description": "A highly customizable vuejs tree",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "main": "dist/vue-tree.js",
   "scripts": {
     "build": "rimraf ./dist && webpack --config ./webpack.config.js"
   },
-  "keywords": [ "vuejs", "tree", "custom" ],
+  "keywords": [
+    "vuejs",
+    "tree",
+    "custom"
+  ],
   "files": [
     "index.js",
     "components/*.vue"
