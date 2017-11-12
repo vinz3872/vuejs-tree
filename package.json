@@ -11,10 +11,6 @@
     "tree",
     "custom"
   ],
-  "files": [
-    "index.js",
-    "components/*.vue"
-  ],
   "repository": "git@github.com:scalia/vuejs-tree.git",
   "bugs": "git@github.com:scalia/vuejs-tree/issues",
   "author": "vinz3872 <vinz3872@gmail.com>",
