@@ -1,7 +1,7 @@
 {
   "name": "vuejs-tree",
   "description": "A highly customizable vuejs tree",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "main": "src/index.js",
   "keywords": [
     "vuejs",
