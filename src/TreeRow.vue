@@ -1,14 +1,14 @@
 <template>
-  <li class="node" :data-id="node.id" :style="options.style.row" v-on:click.stop="toogleEvent('selected', node, 'node', $event)">
+  <li class="node" :data-id="node.id" :style="options.style.row" v-on:click.stop="toggleEvent('selected', node, 'node', $event)">
     <div style="height: 35px;">
-      <span v-on:click.stop="options.events.expanded.state == true && node.nodes != undefined && node.nodes.length > 0 && toogleEvent('expanded', node)">
+      <span v-on:click.stop="options.events.expanded.state == true && node.nodes != undefined && node.nodes.length > 0 && toggleEvent('expanded', node)">
         <span v-for="count in depth" class="tree-indent"></span>
         <i v-if="options.events.expanded.state == true && node.nodes != undefined && node.nodes.length > 0" class="fa" v-bind:class="{'fa-caret-right': expanded == false, 'fa-caret-down': expanded == true}" aria-hidden="true"></i>
         <span v-else-if="options.events.expanded.state == true && node.nodes == undefined" class="small-tree-indent"></span>
       </span>
-      <i v-if="options.events.selected.state == true" v-on:click.stop="toogleEvent('selected', node)" class="fa" v-bind:class="{[options.icon]: expanded == false, [options.selectedIcon]: expanded == true}" aria-hidden="true" :style="'color:' + (selected == false ? options.iconColor : options.selectedIconColor)"></i>
-      <input type="checkbox" name="item[]" :data-id="node.id" :checked="checked" v-if="options.events.checked.state == true" v-on:click.stop="toogleEvent('checked', node)">
-      <span data-toggle="tooltip" data-placement="top" :title="node.definition" class="capitalize" v-bind:class="{'selected': selected}" :style="options.colorNameWhenSelected && selected ? ('color:' + options.selectedIconColor + '; font-weight: bold') : ''" v-on:click.stop="options.events.editableName.state && toogleEvent(options.events.editableName.calledEvent, node)" >{{ node.text }}</span>
+      <i v-if="options.events.selected.state == true" v-on:click.stop="toggleEvent('selected', node)" class="fa" v-bind:class="{[options.icon]: expanded == false, [options.selectedIcon]: expanded == true}" aria-hidden="true" :style="'color:' + (selected == false ? options.iconColor : options.selectedIconColor)"></i>
+      <input type="checkbox" name="item[]" :data-id="node.id" :checked="checked" v-if="options.events.checked.state == true" v-on:click.stop="toggleEvent('checked', node)">
+      <span data-toggle="tooltip" data-placement="top" :title="node.definition" class="capitalize" v-bind:class="{'selected': selected}" :style="options.colorNameWhenSelected && selected ? ('color:' + options.selectedIconColor + '; font-weight: bold') : ''" v-on:click.stop="options.events.editableName.state && toggleEvent('editableName', node)" >{{ node.text }}</span>
       <span v-if="options.addNodes.state == true" v-on:click='options.addNodes.fn(node)'>
         <i :class="'fa ' + options.addElemIcon" :style="'color:' + options.addElemIconColor" aria-hidden="true"></i>
       </span>
@@ -18,7 +18,7 @@
     </div>
     <ul v-if="expanded">
       <template v-for="child in node.nodes">
-        <tree-row :node="child" :depth="depth + 1" :custom_options="custom_options" :parent_node="node" v-on:nodeSelected="emitNodeSelected" v-on:emitNodeExpanded="emitNodeExpanded" v-on:emitNodeChecked="emitNodeChecked"></tree-row>
+        <tree-row :node="child" :depth="depth + 1" :custom_options="custom_options" :parent_node="node" v-on:emitNodeSelected="emitNodeSelected" v-on:emitNodeExpanded="emitNodeExpanded" v-on:emitNodeChecked="emitNodeChecked"></tree-row>
       </template>
     </ul>
   </li>
@@ -45,20 +45,20 @@
           events: {
             expanded: {
               state: true,
-              fn: this.toogleExpanded
+              fn: this.toggleExpanded
             },
             selected: {
               state: true,
-              fn: this.toogleSelected
+              fn: this.toggleSelected
             },
             checked: {
               state: true,
-              fn: this.toogleChecked
+              fn: this.toggleChecked
             },
             editableName: {
               state: false,
-              fn: this.editableName,
-              calledEvent: 'selected'
+              fn: null,
+              calledEvent: null,
             }
           },
           style: {
@@ -115,27 +115,27 @@
       }
     },
     methods: {
-      toogleEvent: function(event_type, node, class_needed, event) {
-        // if (event && !$(event.target).hasClass(class_needed)) return;
-        if (this.options.events[event_type].state == true) {
+      toggleEvent: function(event_type, node, class_needed, event) {
+        if (event_type == 'editableName' && this.options.events['editableName'].calledEvent) {
+          this.toogleEvent(this.options.events['editableName'].calledEvent, node, class_needed, event)
+        } else if (this.options.events[event_type].state == true) {
           var fn_name = this.options.events[event_type].fn
           fn_name(node, this);
-          // if (event) event.stopPropagation();
         }
       },
-      toogleExpanded: function(node, instance) {
+      toggleExpanded: function(node, instance) {
         this.expanded = !this.expanded
         this.node.state.expanded = this.expanded
         this.$nextTick(function() {
           this.$emit('emitNodeExpanded', node, this.expanded);
         })
       },
-      toogleSelected: function(node, instance) {
+      toggleSelected: function(node, instance) {
         this.selected = !this.selected
         this.node.state.selected = this.selected
         this.$emit('nodeSelected', node);
       },
-      toogleChecked: function(node, instance) {
+      toggleChecked: function(node, instance) {
         this.checked = !this.checked
         this.node.state.checked = this.checked
         this.$nextTick(function() {
@@ -163,7 +163,7 @@
         }
       },
       emitNodeSelected: function(node_selected) { // redirect the event toward the Tree component
-        this.$emit('nodeSelected', node_selected);
+        this.$emit('emitNodeSelected', node_selected);
       },
       emitNodeExpanded: function(node, state) { // redirect the event toward the Tree component
         this.$emit('emitNodeExpanded', node, state);

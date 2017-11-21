@@ -2,7 +2,7 @@
   <div id="tree">
     <ul :style="options.style.tree" v-if="force">
       <template v-for="node in nodes">
-        <tree-row v-on:nodeSelected="nodeSelected" v-on:emitNodeExpanded="nodeExpanded" v-on:emitNodeChecked="nodeChecked" :node="node" :depth="1" :custom_options="custom_options" :parent_node="node"></tree-row>
+        <tree-row v-on:emitNodeSelected="nodeSelected" v-on:emitNodeExpanded="nodeExpanded" v-on:emitNodeChecked="nodeChecked" :node="node" :depth="1" :custom_options="custom_options" :parent_node="node"></tree-row>
       </template>
     </ul>
   </div>
@@ -10,9 +10,6 @@
 
 <script>
   import TreeRow from './TreeRow.vue'
-  // var tree_row = require('./TreeRow.vue');
-  // Vue.component('tree-row', tree_row);
-
 
   export default {
     name: 'tree',
@@ -57,18 +54,10 @@
     },
     mounted: function() {
       this.init_tree()
-        // this.openNode(12634)
-        // this.closeNode(12634)
-        // this.checkNode(12634)
-        // this.uncheckNode(12635)
       },
       methods: {
         forceRender: function(nodes) {
           this.nodes = nodes;
-        // this.force = false;
-        // this.$nextTick(function() {
-        //   this.force = true;
-        // })
       },
       init_tree: function() {
         if (this.custom_options) {
