@@ -58,7 +58,7 @@
             editableName: {
               state: false,
               fn: null,
-              calledEvent: null,
+              calledEvent: null
             }
           },
           style: {
@@ -67,7 +67,7 @@
           addNodes: {state: false, fn: null},
           showTags: false,
           colorNameWhenSelected: true,
-          titleSelectable: true,
+          titleSelectable: true
         },
         checked: false,
         expanded: false,
@@ -76,91 +76,72 @@
     },
     watch: {
       checked: function() {
-        this.node.state.checked = this.checked
+        this.node.state.checked = this.checked;
       },
       expanded: function() {
-        this.node.state.expanded = this.expanded
+        this.node.state.expanded = this.expanded;
       },
       selected: function() {
-        this.node.state.selected = this.selected
+        this.node.state.selected = this.selected;
       }
     },
     mounted: function() {
-      this.init_events()
+      this.init_events();
       if (this.node.checked != undefined && this.node.checked == false) {
-        this.checked = false
-        this.node.state.checked = this.checked
+        this.checked = false;
+        this.node.state.checked = this.checked;
       } else if (this.parent_node.state.checked) {
-        this.checked = this.parent_node.state.checked
-        this.node.state.checked = this.checked
+        this.checked = this.parent_node.state.checked;
+        this.node.state.checked = this.checked;
       } else {
-        this.checked = false
-        this.node.state.checked = this.checked
+        this.checked = false;
+        this.node.state.checked = this.checked;
       }
 
       if (this.node.state.expanded == undefined) {
-        this.expanded = false
-        this.node.state.expanded = this.expanded
+        this.expanded = false;
+        this.node.state.expanded = this.expanded;
       }
       if (this.node.state.expanded == true) {
-        this.expanded = this.node.state.expanded
+        this.expanded = this.node.state.expanded;
       }
 
       if (this.node.state.selected == undefined) {
-        this.selected = false
-        this.node.state.selected = this.selected
+        this.selected = false;
+        this.node.state.selected = this.selected;
       }
       if (this.node.state.selected == true) {
-        this.selected = this.node.state.selected
+        this.selected = this.node.state.selected;
       }
     },
     methods: {
       toggleEvent: function(event_type, node, class_needed, event) {
         if (event_type == 'editableName' && this.options.events['editableName'].calledEvent) {
-          this.toogleEvent(this.options.events['editableName'].calledEvent, node, class_needed, event)
+          this.toogleEvent(this.options.events['editableName'].calledEvent, node, class_needed, event);
         } else if (this.options.events[event_type].state == true) {
-          var fn_name = this.options.events[event_type].fn
+          var fn_name = this.options.events[event_type].fn;
           fn_name(node, this);
         }
       },
       toggleExpanded: function(node, instance) {
-        this.expanded = !this.expanded
-        this.node.state.expanded = this.expanded
+        this.expanded = !this.expanded;
+        this.node.state.expanded = this.expanded;
         this.$nextTick(function() {
           this.$emit('emitNodeExpanded', node, this.expanded);
         })
       },
       toggleSelected: function(node, instance) {
-        this.selected = !this.selected
-        this.node.state.selected = this.selected
+        this.selected = !this.selected;
+        this.node.state.selected = this.selected;
         this.$emit('nodeSelected', node);
       },
       toggleChecked: function(node, instance) {
-        this.checked = !this.checked
-        this.node.state.checked = this.checked
+        this.checked = !this.checked;
+        this.node.state.checked = this.checked;
         this.$nextTick(function() {
-          this.callNodesChecked(this.checked)
+          this.callNodesChecked(this.checked);
           this.$emit('emitNodeChecked', node);
         })
-      },
-      editableName: function(node, instance) {
-        var _this = this
-        var name = prompt('Choose a new name', '')
-        if (name) {
-          $.ajax({
-            url: '/taxonomies/edit_category_name',
-            method: 'POST',
-            data: {
-              category: {
-                id: _this.node.id,
-                name: name
-              }
-            },
-            success: function() {
-              _this.node.name = name
-            }
-          })
-        }
       },
       emitNodeSelected: function(node_selected) { // redirect the event toward the Tree component
         this.$emit('emitNodeSelected', node_selected);
@@ -172,132 +153,138 @@
         this.$emit('emitNodeChecked', node_checked);
       },
       callNodesChecked: function(state) {
-        this.checked = state
+        this.checked = state;
         for (var i = 0; i < this.$children.length; i++) {
-          this.$children[i].callNodesChecked(state)
+          this.$children[i].callNodesChecked(state);
         }
       },
       callNodesUnselect: function() {
-        this.selected = false
-        this.node.state.selected = this.selected
+        this.selected = false;
+        this.node.state.selected = this.selected;
         for (var i = 0; i < this.$children.length; i++) {
-          this.$children[i].callNodesUnselect()
+          this.$children[i].callNodesUnselect();
         }
       },
       callSpecificChild: function(arr_ids, fname, args) {
         for (var i = 0; i < this.$children.length; i++) {
-          var current_node_id = this.$children[i].$props.node.id
+          var current_node_id = this.$children[i].$props.node.id;
           if (arr_ids.find(x => x == current_node_id)) {
-            this.$children[i][fname](args)
-            return false
+            this.$children[i][fname](args);
+            return false;
           }
         }
       },
       callNodeChecked: function(args) {
-        var arr_ids = args.arr_ids
-        var value = args.value
+        var arr_ids = args.arr_ids;
+        var value = args.value;
         if (arr_ids.last() == this.node.id) {
-          this.checked = value
-          this.callNodesChecked(this.checked)
+          this.checked = value;
+          this.callNodesChecked(this.checked);
         } else {
-          this.expanded = true
+          this.expanded = true;
           this.$nextTick(function() {
-            this.callSpecificChild(arr_ids, 'callNodeChecked', args)
+            this.callSpecificChild(arr_ids, 'callNodeChecked', args);
           })
         }
       },
       callNodeSelected: function(args) {
-        var arr_ids = args.arr_ids
-        var value = args.value
+        var arr_ids = args.arr_ids;
+        var value = args.value;
         if (arr_ids.last() == this.node.id) {
-          this.selected = value
+          this.selected = value;
         } else {
-          this.expanded = true
+          this.expanded = true;
           this.$nextTick(function() {
-            this.callSpecificChild(arr_ids, 'callNodeSelected', args)
+            this.callSpecificChild(arr_ids, 'callNodeSelected', args);
           })
         }
       },
       callNodesExpanded: function(state) {
         if (!(this.node.text == 'All' && state != true)) {
-          this.expanded = state
+          this.expanded = state;
         }
         for (var i = 0; i < this.$children.length; i++) {
-          this.$children[i].callNodesExpanded(state)
+          this.$children[i].callNodesExpanded(state);
         }
       },
       callNodeExpanded: function(args) {
-        var arr_ids = args.arr_ids
-        var value = args.value
+        var arr_ids = args.arr_ids;
+        var value = args.value;
         if (value == false && this.expanded == false) return;
         if (arr_ids.last() != this.node.id) {
-          this.expanded = true
+          this.expanded = true;
           this.$nextTick(function() {
-            this.callSpecificChild(arr_ids, 'callNodeExpanded', args)
+            this.callSpecificChild(arr_ids, 'callNodeExpanded', args);
           })
         } else {
-          this.expanded = value
+          this.expanded = value;
         }
       },
       init_events: function() {
-        this.node.depth = this.depth
+        this.node.depth = this.depth;
         if (this.custom_options) {
           if (this.custom_options.events) {
-            var events = this.custom_options.events
+            var events = this.custom_options.events;
             if (events.expanded) {
-              if (events.expanded.state != undefined) this.options.events.expanded.state = events.expanded.state
-              if (events.expanded.fn) this.options.events.expanded.fn = events.expanded.fn
+              if (events.expanded.state != undefined) this.options.events.expanded.state = events.expanded.state;
+              if (events.expanded.fn) this.options.events.expanded.fn = events.expanded.fn;
             }
             if (events.selected) {
-              if (events.selected.state != undefined) this.options.events.selected.state = events.selected.state
-              if (events.selected.fn) this.options.events.selected.fn = events.selected.fn
+              if (events.selected.state != undefined) this.options.events.selected.state = events.selected.state;
+              if (events.selected.fn) this.options.events.selected.fn = events.selected.fn;
             }
             if (events.checked) {
-              if (events.checked.state != undefined) this.options.events.checked.state = events.checked.state          
-              if (events.checked.fn) this.options.events.checked.fn = events.checked.fn
+              if (events.checked.state != undefined) this.options.events.checked.state = events.checked.state;
+              if (events.checked.fn) this.options.events.checked.fn = events.checked.fn;
             }
             if (events.editableName) {
-              if (events.editableName.state != undefined) this.options.events.editableName.state = events.editableName.state
-              if (events.editableName.fn) this.options.events.editableName.fn = events.editableName.fn
-              if (events.editableName.calledEvent) this.options.events.editableName.calledEvent = events.editableName.calledEvent
+              if (events.editableName.state != undefined) this.options.events.editableName.state = events.editableName.state;
+              if (events.editableName.fn) this.options.events.editableName.fn = events.editableName.fn;
+              if (events.editableName.calledEvent) this.options.events.editableName.calledEvent = events.editableName.calledEvent;
             }
           }
           if (this.node.checkable != undefined) {
-            this.options.events.checked.state = this.node.checkable
+            this.options.events.checked.state = this.node.checkable;
+          }
+          if (this.node.selectable != undefined) {
+            this.options.events.selected.state = this.node.selectable;
+          }
+          if (this.node.expandable != undefined) {
+            this.options.events.expanded.state = this.node.expandable;
           }
           if (this.custom_options.style && this.custom_options.style.row) {
-            this.options.style.row = this.custom_options.style.row
+            this.options.style.row = this.custom_options.style.row;
           }
           if (this.custom_options.icon) {
-            this.options.icon = this.custom_options.icon
+            this.options.icon = this.custom_options.icon;
           }
           if (this.custom_options.iconColor) {
-            this.options.iconColor = this.custom_options.iconColor
+            this.options.iconColor = this.custom_options.iconColor;
           }
           if (this.custom_options.selectedIcon) {
-            this.options.selectedIcon = this.custom_options.selectedIcon
+            this.options.selectedIcon = this.custom_options.selectedIcon;
           }
           if (this.custom_options.selectedIconColor) {
-            this.options.selectedIconColor = this.custom_options.selectedIconColor
+            this.options.selectedIconColor = this.custom_options.selectedIconColor;
           }
           if (this.custom_options.addElemIcon) {
-            this.options.addElemIcon = this.custom_options.addElemIcon
+            this.options.addElemIcon = this.custom_options.addElemIcon;
           }
           if (this.custom_options.addElemIconColor) {
-            this.options.addElemIconColor = this.custom_options.addElemIconColor
+            this.options.addElemIconColor = this.custom_options.addElemIconColor;
           }
           if (this.custom_options.addNodes && this.custom_options.addNodes.state == true) {
-            this.options.addNodes.state = true
-            this.options.addNodes.fn = this.custom_options.addNodes.fn
+            this.options.addNodes.state = true;
+            this.options.addNodes.fn = this.custom_options.addNodes.fn;
           }
           if (this.custom_options.showTags) {
-            this.options.showTags = this.custom_options.showTags
+            this.options.showTags = this.custom_options.showTags;
           }
           if (this.custom_options.colorNameWhenSelected) {
-            this.options.colorNameWhenSelected = this.custom_options.colorNameWhenSelected
+            this.options.colorNameWhenSelected = this.custom_options.colorNameWhenSelected;
           }
           if (this.custom_options.titleSelectable) {
-            this.options.titleSelectable = this.custom_options.titleSelectable
+            this.options.titleSelectable = this.custom_options.titleSelectable;
           }
         }
       }
