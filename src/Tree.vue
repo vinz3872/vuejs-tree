@@ -45,7 +45,6 @@
         },
         selected_node: null,
         opened_nodes: {},
-        checked_nodes: {},
         force: true
       }
     },
