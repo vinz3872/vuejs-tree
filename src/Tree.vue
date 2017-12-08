@@ -478,7 +478,9 @@
         if (nodes == undefined) return arr;
         nodes.forEach(function(node) {
           if (Object.keys(node.state).filter(key => conditions[key] == node.state[key]).length == Object.keys(conditions).length) {
-            arr[node.id] = _this.recGetNodesData(arg_wanted, conditions, node.nodes);
+            arr[node.id] = _this.recGetNodesDataWithFormat(arg_wanted, conditions, node.nodes);
+          } else {
+            Object.assign(arr, _this.recGetNodesDataWithFormat(arg_wanted, conditions, node.nodes));
           }
         })
         return arr;
