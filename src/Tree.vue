@@ -453,6 +453,47 @@
         })
         return arr;
       },
+      recGetNodesData: function(arg_wanted, conditions, nodes) {
+        let _this = this;
+        let arr = [];
+        if (nodes == undefined) return arr;
+        nodes.forEach(function(node) {
+          if (Object.keys(node.state).filter(key => conditions[key] == node.state[key]).length == Object.keys(conditions).length) {
+            if (Array.isArray(arg_wanted)) {
+              arr.push(Object.keys(node).filter(key => arg_wanted.includes(key)).reduce((obj, key) => {
+                obj[key] = node[key];
+                return obj;
+               }, {}));
+            } else {
+              arr.push(node[arg_wanted]);
+            }
+          }
+          arr = arr.concat(_this.recGetNodesData(arg_wanted, conditions, node.nodes));
+        })
+        return arr;
+      },
+      recGetNodesDataWithFormat: function(arg_wanted, conditions, nodes) {
+        let _this = this;
+        let arr = {};
+        if (nodes == undefined) return arr;
+        nodes.forEach(function(node) {
+          if (Object.keys(node.state).filter(key => conditions[key] == node.state[key]).length == Object.keys(conditions).length) {
+            arr[node.id] = _this.recGetNodesData(arg_wanted, conditions, node.nodes);
+          }
+        })
+        return arr;
+      },
+      getNodesData: function(arg_wanted, conditions = {}, format = false) {
+        // arg_wanted: id -> return id, id1 etc... arg_wanted: id, name -> return {id: id, name: name}, {id: id1, name: name1}, etc
+        // conditions {checked: true} conditions {checked: true, selected: true}
+        let arr = null;
+        if (format == false) {
+          arr = this.recGetNodesData(arg_wanted, conditions, this.nodes);
+        } else {
+          arr = this.recGetNodesDataWithFormat(arg_wanted, conditions, this.nodes);
+        }
+        return arr;
+      }
     }
   }
 
