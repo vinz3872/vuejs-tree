@@ -152,10 +152,22 @@
       emitNodeChecked: function(node_checked) { // redirect the event toward the Tree component
         this.$emit('emitNodeChecked', node_checked);
       },
+      recCallNodes: function(state, event, nodes) {
+        let _this = this;
+        nodes.forEach(function(node) {
+          node.state[event] = state;
+          if (node.nodes) {
+            _this.recCallNodes(state, event, node.nodes);
+          }
+        })
+      },
       callNodesChecked: function(state) {
         this.checked = state;
         for (var i = 0; i < this.$children.length; i++) {
           this.$children[i].callNodesChecked(state);
+        }
+        if (this.$children.length == 0 && this.node.nodes && this.node.nodes.length > 0) {
+          this.recCallNodes(state, "checked", this.node.nodes);
         }
       },
       callNodesUnselect: function() {
@@ -163,6 +175,9 @@
         this.node.state.selected = this.selected;
         for (var i = 0; i < this.$children.length; i++) {
           this.$children[i].callNodesUnselect();
+        }
+        if (this.$children.length == 0 && this.node.nodes.length > 0) {
+          this.recCallNodes(false, "selected", this.node.nodes);
         }
       },
       callSpecificChild: function(arr_ids, fname, args) {

@@ -84,7 +84,7 @@
           }
         }
       },
-      findNodePathRec: function(node_id, nodes, ret, depth, max_depth) {
+      findNodePathRec: function(node_id, nodes, depth, max_depth) {
         var _this = this;
 
         nodes.forEach(function(node) {
@@ -92,7 +92,7 @@
           if (node_id == node.id && max_depth >= depth) {
             ret.unshift(node.id);
             return false;
-          } else if (node.nodes && max_depth > depth && (tmp = _this.findNodePathRec(node_id, node.nodes, ret, depth+1, max_depth)) != null) {
+          } else if (node.nodes && max_depth > depth && (tmp = _this.findNodePathRec(node_id, node.nodes, depth+1, max_depth)) != null) {
             tmp.unshift(node.id);
             ret = tmp;
             return false;
@@ -102,27 +102,10 @@
         if (ret.length == 0) return null;
         return ret;
       },
-      findNodePath: function(node_id, max_depth) {
-        var _this = this;
-        var ret = [];
-        var tmp = [];
-        var depth = 1
-        if (max_depth == undefined || max_depth == null) var max_depth = 9999;
-        _this.nodes.forEach(function(node) {
-          if (node_id == node.id && max_depth >= depth) {
-            ret.unshift(node.id);
-            return false;
-          } else if (node.nodes && max_depth > depth && (tmp = _this.findNodePathRec(node_id, node.nodes, ret, depth+1, max_depth)) != null) {
-            tmp.unshift(node.id);
-            ret = tmp;
-            return false;
-          }
-        })
-
-        if (ret.length == 0) return null;
-        return ret;
+      findNodePath: function(node_id, max_depth = 9999) {
+        return this.findNodePathRec(node_id, this.node.nodes, 1, max_depth)
       },
-      findNodeRec: function(node_id, nodes, ret, depth, max_depth) {
+      findNodeRec: function(node_id, nodes, depth, max_depth) {
         var _this = this;
 
         nodes.forEach(function(node) {
@@ -130,7 +113,7 @@
           if (node_id == node.id && max_depth >= depth) {
             ret = node;
             return false;
-          } else if (node.nodes && max_depth > depth && (tmp = _this.findNodeRec(node_id, node.nodes, ret, depth+1, max_depth)) != null) {
+          } else if (node.nodes && max_depth > depth && (tmp = _this.findNodeRec(node_id, node.nodes, depth+1, max_depth)) != null) {
             ret = tmp;
             return false;
           }
@@ -138,23 +121,8 @@
 
         return ret;
       },
-      findNode: function(node_id, max_depth) {
-        var _this = this;
-        var ret = null;
-        var tmp = null;
-        if (max_depth == undefined || max_depth == null) max_depth = 9999;
-        var depth = 1;
-        _this.nodes.forEach(function(node) {
-          if (node_id == node.id && max_depth >= depth) {
-            ret = node;
-            return false;
-          } else if (node.nodes && max_depth > depth && (tmp = _this.findNodeRec(node_id, node.nodes, ret, depth+1, max_depth)) != null) {
-            ret = tmp;
-            return false;
-          }
-        })
-
-        return ret;
+      findNode: function(node_id, max_depth = 9999) {
+        return this.findNodeRec(node_id, this.node.nodes, 1, max_depth)
       },
       nodeSelected: function(node_selected) { // called when a TreeRow is selected
         let _this = this;
@@ -198,7 +166,7 @@
           fn(node.id, state);
         }
       },
-      nodeChecked: function(node) {
+      nodeChecked: function(node) { // called when a TreeRow is checked
         var fn = null;
         if (this.options.tree_events.checked && this.options.tree_events.checked.state == true) {
           var fn = this.custom_options.tree_events.checked.fn;
@@ -217,98 +185,28 @@
           }
         }
       },
-      checkNode: function(node_id, depth) {
+      doCheckNode: function(node_id, depth, state) {
         var arr_ids = this.findNodePath(node_id, depth);
         if (!arr_ids) return;
         this.callSpecificChild(arr_ids, 'callNodeChecked', {
-          value: true,
+          value: state,
           arr_ids: arr_ids
         });
       },
+      checkNode: function(node_id, depth) {
+        this.doCheckNode(node_id, depth, true);
+      },
       uncheckNode: function(node_id, depth) {
-        var arr_ids = this.findNodePath(node_id, depth);
-        this.callSpecificChild(arr_ids, 'callNodeChecked', {
-          value: false,
-          arr_ids: arr_ids
-        });
+        this.doCheckNode(node_id, depth, false);
       },
       getSelected: function() {
         return this.selected_node;
       },
-      recGetChecked(nodes) {
-        let checked = [];
-        let _this = this;
-
-        nodes.forEach(function(node) {
-          if (node.state.checked == true) {
-            checked.push(node.id);
-          }
-          checked.concat(_this.recGetChecked(node.nodes));
-        })
-
-        return checked;
-      },
       getChecked: function() {
-        let checked = [];
-        let _this = this;
-
-        _this.nodes.forEach(function(node) {
-          if (node.state.checked == true) {
-            checked.push(node.id);
-          }
-          checked.concat(_this.recGetChecked(node.nodes));
-        })
-
-        return checked;
+        return this.getNodesData(arg_wanted, {checked: true}, format);
       },
-      recGetOpened: function(nodes) {
-        var opened = [];
-
-        for (var node_id in nodes) {
-          opened.unshift(node_id);
-          var child = this.recGetOpened(nodes[node_id]);
-          opened = opened.concat(child);
-        }
-        return opened;
-      },
-      getOpened: function() {
-        var opened = [];
-
-        for (var node_id in this.opened_nodes) {
-          opened.unshift(node_id);
-          var child = this.recGetOpened(this.opened_nodes[node_id]);
-          opened = opened.concat(child);
-        }
-        return opened;
-      },
-      recGetOpenedWithTree: function(nodes, opened_tree) {
-        var opened = {};
-        for (var num in nodes) {
-          var key = nodes[num].id;
-          if (key != undefined) {
-            if (opened_tree != undefined && opened_tree[key] != undefined) {
-              opened[key] = this.recGetOpenedWithTree(nodes[num].nodes, opened_tree[key]);
-            } else {
-              opened[key] = {};
-            }
-          }
-        }
-        return opened;
-      },
-      getOpenedWithTree: function() {
-        var opened = {};
-
-        for (var num in this.nodes) {
-          var key = this.nodes[num].id;
-          if (key != undefined) {
-            if (this.opened_nodes[key] != undefined) {
-              opened[key] = this.recGetOpenedWithTree(this.nodes[num].nodes, this.opened_nodes[key]);
-            } else {
-              opened[key] = {};
-            }
-          }
-        }
-        return opened;
+      getOpened: function(arg_wanted, format = false) {
+        return this.getNodesData(arg_wanted, {expanded: true}, format);
       },
       checkAll: function() {
         for (var i = 0; i < this.$children.length; i++) {
@@ -415,41 +313,26 @@
           tmp_elem = tmp_elem[id];
         });
       },
-      recGetVisible: function(arr, elem) {
-        let _this = this;
-        let id = elem.$props.node.id;
-        arr.push(id);
-
-        elem.$children.forEach(function(child) {
-          arr = _this.recGetVisible(arr, child);
-        })
-        return arr;
-      },
-      getVisible: function() {
-        let _this = this;
-        let arr = [];
-
-        this.$children.forEach(function(child) {
-          arr = _this.recGetVisible(arr, child);
-        })
-        return arr;
-      },
-      recGetVisibleNodes: function(arr, elem) {
+      recGetVisibleNodes: function(arr, elem, full_node) {
         let _this = this;
         let node = elem.$props.node;
-        arr.push(node);
-
+        if (full_node == true) {
+          arr.push(node);
+        } else {
+          arr.push(id);
+        }
+        
         elem.$children.forEach(function(child) {
-          arr = _this.recGetVisibleNodes(arr, child);
+          arr = _this.recGetVisibleNodes(arr, child, full_node);
         })
         return arr;
       },
-      getVisibleNodes: function() {
+      getVisibleNodes: function(full_node = false) {
         let _this = this;
         let arr = [];
 
         this.$children.forEach(function(child) {
-          arr = _this.recGetVisibleNodes(arr, child);
+          arr = _this.recGetVisibleNodes(arr, child, full_node);
         })
         return arr;
       },
@@ -505,9 +388,8 @@
   ** checkNode: take a node_id and check it
   ** uncheckNode
   ** getSelected: get selected node
-  ** getChecked : TODO
-  ** getOpened: get array of node_ids ex : [1122, 44, 444]
-  ** getOpenedWithTree: get tree with node_ids ex: {1122: {44: {}}, 444: {}}
+  ** getChecked : getNodesData alias, get checked ids or nodes
+  ** getOpened: getNodesData alias, get expanded ids or nodes
   ** checkAll: check all nodes
   ** uncheckAll
   ** openNode: take a node_id and check it
@@ -517,8 +399,7 @@
   ** collapseAll
   ** unselectAll: select all nodes
   ** findNode: take a node_id and return the node
-  ** getVisible: get array of all visible nodes ids
-  ** getVisibleNodes: get array of all visible nodes
+  ** getVisibleNodes: get array of all visible nodes or ids
   **
   */
 
