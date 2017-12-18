@@ -1,24 +1,79 @@
 <template>
-  <li class="node" :data-id="node.id" :style="options.style.row" v-on:click.stop="toggleEvent('selected', node, 'node', $event)">
+  <li
+    class="node"
+    :data-id="node.id"
+    :style="options.style.row"
+    v-on:click.stop="toggleEvent('selected', node, 'node', $event)">
     <div style="height: 35px;">
       <span v-on:click.stop="options.events.expanded.state == true && node.nodes != undefined && node.nodes.length > 0 && toggleEvent('expanded', node)">
         <span v-for="count in depth" class="tree-indent"></span>
-        <i v-if="options.events.expanded.state == true && node.nodes != undefined && node.nodes.length > 0" class="fa" v-bind:class="{'fa-caret-right': expanded == false, 'fa-caret-down': expanded == true}" aria-hidden="true"></i>
-        <span v-else-if="options.events.expanded.state == true && node.nodes == undefined" class="small-tree-indent"></span>
+        <i
+          v-if="options.events.expanded.state == true && node.nodes != undefined && node.nodes.length > 0"
+          class="fa"
+          v-bind:class="{'fa-caret-right': expanded == false, 'fa-caret-down': expanded == true}"
+          aria-hidden="true">
+        </i>
+        <span
+          v-else-if="options.events.expanded.state == true && node.nodes == undefined"
+          class="small-tree-indent">
+        </span>
       </span>
-      <i v-if="options.events.selected.state == true" v-on:click.stop="toggleEvent('selected', node)" class="fa" v-bind:class="{[options.icon]: expanded == false, [options.selectedIcon]: expanded == true}" aria-hidden="true" :style="'color:' + (selected == false ? options.iconColor : options.selectedIconColor)"></i>
-      <input type="checkbox" name="item[]" :data-id="node.id" :checked="checked" v-if="options.events.checked.state == true" v-on:click.stop="toggleEvent('checked', node)">
-      <span data-toggle="tooltip" data-placement="top" :title="node.definition" class="capitalize" v-bind:class="{'selected': selected}" :style="options.colorNameWhenSelected && selected ? ('color:' + options.selectedIconColor + '; font-weight: bold') : ''" v-on:click.stop="options.events.editableName.state && toggleEvent('editableName', node)" >{{ node.text }}</span>
-      <span v-if="options.addNodes.state == true" v-on:click='options.addNodes.fn(node)'>
-        <i :class="'fa ' + options.addElemIcon" :style="'color:' + options.addElemIconColor" aria-hidden="true"></i>
+      <i
+        v-if="options.events.selected.state == true"
+        v-on:click.stop="toggleEvent('selected', node)"
+        class="fa"
+        v-bind:class="{[options.icon]: expanded == false, [options.selectedIcon]: expanded == true}"
+        aria-hidden="true"
+        :style="'color:' + (selected == false ? options.iconColor : options.selectedIconColor)">
+      </i>
+      <input
+        type="checkbox"
+        name="item[]"
+        :data-id="node.id"
+        :checked="checked"
+        v-if="options.events.checked.state == true"
+        v-on:click.stop="toggleEvent('checked', node)"
+      >
+      <span
+        data-toggle="tooltip"
+        data-placement="top"
+        :title="node.definition"
+        class="capitalize"
+        v-bind:class="{'selected': selected}"
+        :style="options.colorNameWhenSelected && selected ? ('color:' + options.selectedIconColor + '; font-weight: bold') : ''"
+        v-on:click.stop="options.events.editableName.state && toggleEvent('editableName', node)" >
+        {{ node.text }}
+      </span>
+      <span
+        v-if="options.addNodes.state == true"
+        v-on:click='options.addNodes.fn(node)'>
+        <i
+          :class="'fa ' + options.addElemIcon"
+          :style="'color:' + options.addElemIconColor"
+          aria-hidden="true">
+        </i>
       </span>
       <span v-if="options.showTags == true">
-        <span v-if="node.tags[0] != undefined && node.tags[0]!= null && node.tags[0]" class="badge">{{ node.tags[0] }}</span>
+        <span
+          v-if="node.tags[0] != undefined && node.tags[0]!= null && node.tags[0]"
+          class="badge">
+          {{ node.tags[0] }}
+        </span>
       </span>
     </div>
     <ul v-if="expanded">
-      <template v-for="child in node.nodes">
-        <tree-row :node="child" :depth="depth + 1" :custom_options="custom_options" :parent_node="node" v-on:emitNodeSelected="emitNodeSelected" v-on:emitNodeExpanded="emitNodeExpanded" v-on:emitNodeChecked="emitNodeChecked"></tree-row>
+      <template
+        v-for="child in node.nodes"
+        :key="child.id">
+        <tree-row
+          :node="child"
+          :depth="depth + 1"
+          :custom-options="customOptions"
+          :parent-node="node"
+          v-on:emitNodeSelected="emitNodeSelected"
+          v-on:emitNodeExpanded="emitNodeExpanded"
+          v-on:emitNodeChecked="emitNodeChecked">
+        </tree-row>
       </template>
     </ul>
   </li>
@@ -28,10 +83,13 @@
   export default {
     name: 'tree-row',
     props: {
-      node: Object,
+      node: {
+        type: Object,
+        required: true
+      },
       depth: Number,
-      custom_options: Object,
-      parent_node: Object
+      customOptions: Object,
+      parentNode: Object
     },
     data: function() {
       return {
@@ -86,12 +144,12 @@
       }
     },
     mounted: function() {
-      this.init_events();
+      this.initEvents();
       if (this.node.checked != undefined && this.node.checked == false) {
         this.checked = false;
         this.node.state.checked = this.checked;
-      } else if (this.parent_node.state.checked) {
-        this.checked = this.parent_node.state.checked;
+      } else if (this.parentNode.state.checked) {
+        this.checked = this.parentNode.state.checked;
         this.node.state.checked = this.checked;
       } else {
         this.checked = false;
@@ -115,12 +173,12 @@
       }
     },
     methods: {
-      toggleEvent: function(event_type, node, class_needed, event) {
-        if (event_type == 'editableName' && this.options.events['editableName'].calledEvent) {
-          this.toogleEvent(this.options.events['editableName'].calledEvent, node, class_needed, event);
-        } else if (this.options.events[event_type].state == true) {
-          var fn_name = this.options.events[event_type].fn;
-          fn_name(node, this);
+      toggleEvent: function(eventType, node, classNeeded, event) {
+        if (eventType == 'editableName' && this.options.events['editableName'].calledEvent) {
+          this.toogleEvent(this.options.events['editableName'].calledEvent, node, classNeeded, event);
+        } else if (this.options.events[eventType].state == true) {
+          var fnName = this.options.events[eventType].fn;
+          fnName(node, this);
         }
       },
       toggleExpanded: function(node, instance) {
@@ -143,14 +201,14 @@
           this.$emit('emitNodeChecked', node);
         })
       },
-      emitNodeSelected: function(node_selected) { // redirect the event toward the Tree component
-        this.$emit('emitNodeSelected', node_selected);
+      emitNodeSelected: function(nodeSelected) { // redirect the event toward the Tree component
+        this.$emit('emitNodeSelected', nodeSelected);
       },
       emitNodeExpanded: function(node, state) { // redirect the event toward the Tree component
         this.$emit('emitNodeExpanded', node, state);
       },
-      emitNodeChecked: function(node_checked) { // redirect the event toward the Tree component
-        this.$emit('emitNodeChecked', node_checked);
+      emitNodeChecked: function(nodeChecked) { // redirect the event toward the Tree component
+        this.$emit('emitNodeChecked', nodeChecked);
       },
       recCallNodes: function(state, event, nodes) {
         let _this = this;
@@ -180,37 +238,37 @@
           this.recCallNodes(false, "selected", this.node.nodes);
         }
       },
-      callSpecificChild: function(arr_ids, fname, args) {
+      callSpecificChild: function(arrIds, fname, args) {
         for (var i = 0; i < this.$children.length; i++) {
-          var current_node_id = this.$children[i].$props.node.id;
-          if (arr_ids.find(x => x == current_node_id)) {
+          var currentNodeId = this.$children[i].$props.node.id;
+          if (arrIds.find(x => x == currentNodeId)) {
             this.$children[i][fname](args);
             return false;
           }
         }
       },
       callNodeChecked: function(args) {
-        var arr_ids = args.arr_ids;
+        var arrIds = args.arrIds;
         var value = args.value;
-        if (arr_ids.last() == this.node.id) {
+        if (arrIds.last() == this.node.id) {
           this.checked = value;
           this.callNodesChecked(this.checked);
         } else {
           this.expanded = true;
           this.$nextTick(function() {
-            this.callSpecificChild(arr_ids, 'callNodeChecked', args);
+            this.callSpecificChild(arrIds, 'callNodeChecked', args);
           })
         }
       },
       callNodeSelected: function(args) {
-        var arr_ids = args.arr_ids;
+        var arrIds = args.arrIds;
         var value = args.value;
-        if (arr_ids.last() == this.node.id) {
+        if (arrIds.last() == this.node.id) {
           this.selected = value;
         } else {
           this.expanded = true;
           this.$nextTick(function() {
-            this.callSpecificChild(arr_ids, 'callNodeSelected', args);
+            this.callSpecificChild(arrIds, 'callNodeSelected', args);
           })
         }
       },
@@ -223,23 +281,23 @@
         }
       },
       callNodeExpanded: function(args) {
-        var arr_ids = args.arr_ids;
+        var arrIds = args.arrIds;
         var value = args.value;
         if (value == false && this.expanded == false) return;
-        if (arr_ids.last() != this.node.id) {
+        if (arrIds.last() != this.node.id) {
           this.expanded = true;
           this.$nextTick(function() {
-            this.callSpecificChild(arr_ids, 'callNodeExpanded', args);
+            this.callSpecificChild(arrIds, 'callNodeExpanded', args);
           })
         } else {
           this.expanded = value;
         }
       },
-      init_events: function() {
+      initEvents: function() {
         this.node.depth = this.depth;
-        if (this.custom_options) {
-          if (this.custom_options.events) {
-            var events = this.custom_options.events;
+        if (this.customOptions) {
+          if (this.customOptions.events) {
+            var events = this.customOptions.events;
             if (events.expanded) {
               if (events.expanded.state != undefined) this.options.events.expanded.state = events.expanded.state;
               if (events.expanded.fn) this.options.events.expanded.fn = events.expanded.fn;
@@ -267,39 +325,39 @@
           if (this.node.expandable != undefined) {
             this.options.events.expanded.state = this.node.expandable;
           }
-          if (this.custom_options.style && this.custom_options.style.row) {
-            this.options.style.row = this.custom_options.style.row;
+          if (this.customOptions.style && this.customOptions.style.row) {
+            this.options.style.row = this.customOptions.style.row;
           }
-          if (this.custom_options.icon) {
-            this.options.icon = this.custom_options.icon;
+          if (this.customOptions.icon) {
+            this.options.icon = this.customOptions.icon;
           }
-          if (this.custom_options.iconColor) {
-            this.options.iconColor = this.custom_options.iconColor;
+          if (this.customOptions.iconColor) {
+            this.options.iconColor = this.customOptions.iconColor;
           }
-          if (this.custom_options.selectedIcon) {
-            this.options.selectedIcon = this.custom_options.selectedIcon;
+          if (this.customOptions.selectedIcon) {
+            this.options.selectedIcon = this.customOptions.selectedIcon;
           }
-          if (this.custom_options.selectedIconColor) {
-            this.options.selectedIconColor = this.custom_options.selectedIconColor;
+          if (this.customOptions.selectedIconColor) {
+            this.options.selectedIconColor = this.customOptions.selectedIconColor;
           }
-          if (this.custom_options.addElemIcon) {
-            this.options.addElemIcon = this.custom_options.addElemIcon;
+          if (this.customOptions.addElemIcon) {
+            this.options.addElemIcon = this.customOptions.addElemIcon;
           }
-          if (this.custom_options.addElemIconColor) {
-            this.options.addElemIconColor = this.custom_options.addElemIconColor;
+          if (this.customOptions.addElemIconColor) {
+            this.options.addElemIconColor = this.customOptions.addElemIconColor;
           }
-          if (this.custom_options.addNodes && this.custom_options.addNodes.state == true) {
+          if (this.customOptions.addNodes && this.customOptions.addNodes.state == true) {
             this.options.addNodes.state = true;
-            this.options.addNodes.fn = this.custom_options.addNodes.fn;
+            this.options.addNodes.fn = this.customOptions.addNodes.fn;
           }
-          if (this.custom_options.showTags) {
-            this.options.showTags = this.custom_options.showTags;
+          if (this.customOptions.showTags) {
+            this.options.showTags = this.customOptions.showTags;
           }
-          if (this.custom_options.colorNameWhenSelected) {
-            this.options.colorNameWhenSelected = this.custom_options.colorNameWhenSelected;
+          if (this.customOptions.colorNameWhenSelected) {
+            this.options.colorNameWhenSelected = this.customOptions.colorNameWhenSelected;
           }
-          if (this.custom_options.titleSelectable) {
-            this.options.titleSelectable = this.custom_options.titleSelectable;
+          if (this.customOptions.titleSelectable) {
+            this.options.titleSelectable = this.customOptions.titleSelectable;
           }
         }
       }

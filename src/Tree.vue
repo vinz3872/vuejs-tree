@@ -1,8 +1,20 @@
 <template>
   <div id="tree">
-    <ul :style="options.style.tree" v-if="force">
-      <template v-for="node in nodes">
-        <tree-row v-on:emitNodeSelected="nodeSelected" v-on:emitNodeExpanded="nodeExpanded" v-on:emitNodeChecked="nodeChecked" :node="node" :depth="1" :custom_options="custom_options" :parent_node="node"></tree-row>
+    <ul
+      :style="options.style.tree"
+      v-if="force">
+      <template 
+        v-for="node in nodes"
+        :key="node.id">
+        <tree-row
+          v-on:emitNodeSelected="nodeSelected"
+          v-on:emitNodeExpanded="nodeExpanded"
+          v-on:emitNodeChecked="nodeChecked"
+          :node="node"
+          :depth="1"
+          :custom-options="customOptions"
+          :parent-node="node">
+        </tree-row>
       </template>
     </ul>
   </div>
@@ -14,9 +26,12 @@
   export default {
     name: 'tree',
     props: {
-      nodes: Array,
-      custom_options: Object,
-      id: String
+      customOptions: Object,
+      id: String,
+      nodes: {
+        type: Array,
+        required: true
+      }
     },
     data: function() {
       return {
@@ -24,7 +39,7 @@
           style: {
             tree: 'height: auto;max-height: 500px;overflow-y: scroll;border: 1px solid #ddd;display: inline-block;',
           },
-          tree_events: {
+          treeEvents: {
             expanded: {
               state: false,
               fn: null
@@ -43,8 +58,8 @@
             }
           }
         },
-        selected_node: null,
-        opened_nodes: {},
+        selectedNode: null,
+        openedNodes: {},
         force: true
       }
     },
@@ -52,47 +67,47 @@
       'tree-row': TreeRow
     },
     mounted: function() {
-      this.init_tree();
+      this.initTree();
       },
       methods: {
         forceRender: function(nodes) {
           this.nodes = nodes;
       },
-      init_tree: function() {
-        if (this.custom_options) {
-          if (this.custom_options.style && this.custom_options.style.tree) {
-            this.options.style.tree = this.custom_options.style.tree;
+      initTree: function() {
+        if (this.customOptions) {
+          if (this.customOptions.style && this.customOptions.style.tree) {
+            this.options.style.tree = this.customOptions.style.tree;
           }
-          if (this.custom_options.tree_events) {
-            var events = this.custom_options.tree_events;
+          if (this.customOptions.treeEvents) {
+            var events = this.customOptions.treeEvents;
             if (events.expanded) {
-              if (events.expanded.state != undefined) this.options.tree_events.expanded.state = events.expanded.state;
-                if (events.expanded.fn) this.options.tree_events.expanded.fn = events.expanded.fn;
+              if (events.expanded.state != undefined) this.options.treeEvents.expanded.state = events.expanded.state;
+                if (events.expanded.fn) this.options.treeEvents.expanded.fn = events.expanded.fn;
               }
             if (events.collapsed) {
-              if (events.collapsed.state != undefined) this.options.tree_events.collapsed.state = events.collapsed.state;
-                if (events.collapsed.fn) this.options.tree_events.collapsed.fn = events.collapsed.fn;
+              if (events.collapsed.state != undefined) this.options.treeEvents.collapsed.state = events.collapsed.state;
+                if (events.collapsed.fn) this.options.treeEvents.collapsed.fn = events.collapsed.fn;
               }
             if (events.selected) {
-              if (events.selected.state != undefined) this.options.tree_events.selected.state = events.selected.state;
-                if (events.selected.fn) this.options.tree_events.selected.fn = events.selected.fn;
+              if (events.selected.state != undefined) this.options.treeEvents.selected.state = events.selected.state;
+                if (events.selected.fn) this.options.treeEvents.selected.fn = events.selected.fn;
               }
             if (events.checked) {
-              if (events.checked.state != undefined) this.options.tree_events.checked.state = events.checked.state;
-                if (events.checked.fn) this.options.tree_events.checked.fn = events.checked.fn;
+              if (events.checked.state != undefined) this.options.treeEvents.checked.state = events.checked.state;
+                if (events.checked.fn) this.options.treeEvents.checked.fn = events.checked.fn;
               }
           }
         }
       },
-      findNodePathRec: function(node_id, nodes, depth, max_depth) {
+      findNodePathRec: function(nodeId, nodes, depth, maxDepth) {
         var _this = this;
 
         nodes.forEach(function(node) {
           var tmp = [];
-          if (node_id == node.id && max_depth >= depth) {
+          if (nodeId == node.id && maxDepth >= depth) {
             ret.unshift(node.id);
             return false;
-          } else if (node.nodes && max_depth > depth && (tmp = _this.findNodePathRec(node_id, node.nodes, depth+1, max_depth)) != null) {
+          } else if (node.nodes && maxDepth > depth && (tmp = _this.findNodePathRec(nodeId, node.nodes, depth+1, maxDepth)) != null) {
             tmp.unshift(node.id);
             ret = tmp;
             return false;
@@ -102,18 +117,18 @@
         if (ret.length == 0) return null;
         return ret;
       },
-      findNodePath: function(node_id, max_depth = 9999) {
-        return this.findNodePathRec(node_id, this.node.nodes, 1, max_depth)
+      findNodePath: function(nodeId, maxDepth = 9999) {
+        return this.findNodePathRec(nodeId, this.node.nodes, 1, maxDepth)
       },
-      findNodeRec: function(node_id, nodes, depth, max_depth) {
+      findNodeRec: function(nodeId, nodes, depth, maxDepth) {
         var _this = this;
 
         nodes.forEach(function(node) {
           var tmp = [];
-          if (node_id == node.id && max_depth >= depth) {
+          if (nodeId == node.id && maxDepth >= depth) {
             ret = node;
             return false;
-          } else if (node.nodes && max_depth > depth && (tmp = _this.findNodeRec(node_id, node.nodes, depth+1, max_depth)) != null) {
+          } else if (node.nodes && maxDepth > depth && (tmp = _this.findNodeRec(nodeId, node.nodes, depth+1, maxDepth)) != null) {
             ret = tmp;
             return false;
           }
@@ -121,33 +136,33 @@
 
         return ret;
       },
-      findNode: function(node_id, max_depth = 9999) {
-        return this.findNodeRec(node_id, this.node.nodes, 1, max_depth)
+      findNode: function(nodeId, maxDepth = 9999) {
+        return this.findNodeRec(nodeId, this.node.nodes, 1, maxDepth)
       },
-      nodeSelected: function(node_selected) { // called when a TreeRow is selected
+      nodeSelected: function(nodeSelected) { // called when a TreeRow is selected
         let _this = this;
-        if (this.selected_node == null && node_selected.state.selected == true) {
-          this.selected_node = node_selected;
-        } else if (this.selected_node != null && node_selected.state.selected == false) {
-          this.selected_node = null;
-        } else if (this.selected_node != null && node_selected.state.selected == true) {
-          let arr_ids = this.findNodePath(this.selected_node.id, this.selected_node.depth)
-          this.callSpecificChild(arr_ids, 'callNodeSelected', {value: false, arr_ids: arr_ids});
-          this.selected_node = node_selected;
+        if (this.selectedNode == null && nodeSelected.state.selected == true) {
+          this.selectedNode = nodeSelected;
+        } else if (this.selectedNode != null && nodeSelected.state.selected == false) {
+          this.selectedNode = null;
+        } else if (this.selectedNode != null && nodeSelected.state.selected == true) {
+          let arrIds = this.findNodePath(this.selectedNode.id, this.selectedNode.depth)
+          this.callSpecificChild(arrIds, 'callNodeSelected', {value: false, arrIds: arrIds});
+          this.selectedNode = nodeSelected;
           this.$nextTick(function() {
-            let select_arr_ids = _this.findNodePath(_this.selected_node.id, _this.selected_node.depth);
-            _this.callSpecificChild(select_arr_ids, 'callNodeSelected', {value: true, arr_ids: select_arr_ids});
+            let selectArrIds = _this.findNodePath(_this.selectedNode.id, _this.selectedNode.depth);
+            _this.callSpecificChild(selectArrIds, 'callNodeSelected', {value: true, arrIds: selectArrIds});
           })
 
         }
 
         let fn = null;
-        if (this.options.tree_events.selected && this.options.tree_events.selected.state == true) {
-          fn = this.custom_options.tree_events.selected.fn;
+        if (this.options.treeEvents.selected && this.options.treeEvents.selected.state == true) {
+          fn = this.customOptions.treeEvents.selected.fn;
         }
-        let state = (this.selected_node == null) ? false : true;
+        let state = (this.selectedNode == null) ? false : true;
         if(fn){
-          fn(node_selected.id, state);
+          fn(nodeSelected.id, state);
         }
       },
       nodeExpanded: function(node, state) { // called when a TreeRow is expanded or closed
@@ -157,10 +172,10 @@
           this.nodeOpened(node.id, null, node.depth);
         }
         var fn = null;
-        if (state == true && this.options.tree_events.expanded && this.options.tree_events.expanded.state == true) {
-          var fn = this.custom_options.tree_events.expanded.fn;
-        } else if (this.options.tree_events.collapsed.state == true && this.options.tree_events.collapsed.state == true) {
-          var fn = this.custom_options.tree_events.collapsed.fn;
+        if (state == true && this.options.treeEvents.expanded && this.options.treeEvents.expanded.state == true) {
+          var fn = this.customOptions.treeEvents.expanded.fn;
+        } else if (this.options.treeEvents.collapsed.state == true && this.options.treeEvents.collapsed.state == true) {
+          var fn = this.customOptions.treeEvents.collapsed.fn;
         }
         if(fn){
           fn(node.id, state);
@@ -168,45 +183,45 @@
       },
       nodeChecked: function(node) { // called when a TreeRow is checked
         var fn = null;
-        if (this.options.tree_events.checked && this.options.tree_events.checked.state == true) {
-          var fn = this.custom_options.tree_events.checked.fn;
+        if (this.options.treeEvents.checked && this.options.treeEvents.checked.state == true) {
+          var fn = this.customOptions.treeEvents.checked.fn;
         }
         let state = node.state.checked;
         if(fn){
           fn(node.id, state);
         }
       },
-      callSpecificChild: function(arr_ids, fname, args) {
+      callSpecificChild: function(arrIds, fname, args) {
         for (var i = 0; i < this.$children.length; i++) {
-          var current_node_id = this.$children[i].$props.node.id;
-          if (arr_ids.find(x => x == current_node_id)) {
+          var currentNodeId = this.$children[i].$props.node.id;
+          if (arrIds.find(x => x == currentNodeId)) {
             this.$children[i][fname](args);
             return false;
           }
         }
       },
-      doCheckNode: function(node_id, depth, state) {
-        var arr_ids = this.findNodePath(node_id, depth);
-        if (!arr_ids) return;
-        this.callSpecificChild(arr_ids, 'callNodeChecked', {
+      doCheckNode: function(nodeId, depth, state) {
+        var arrIds = this.findNodePath(nodeId, depth);
+        if (!arrIds) return;
+        this.callSpecificChild(arrIds, 'callNodeChecked', {
           value: state,
-          arr_ids: arr_ids
+          arrIds: arrIds
         });
       },
-      checkNode: function(node_id, depth) {
-        this.doCheckNode(node_id, depth, true);
+      checkNode: function(nodeId, depth) {
+        this.doCheckNode(nodeId, depth, true);
       },
-      uncheckNode: function(node_id, depth) {
-        this.doCheckNode(node_id, depth, false);
+      uncheckNode: function(nodeId, depth) {
+        this.doCheckNode(nodeId, depth, false);
       },
       getSelected: function() {
-        return this.selected_node;
+        return this.selectedNode;
       },
-      getChecked: function() {
-        return this.getNodesData(arg_wanted, {checked: true}, format);
+      getChecked: function(argWanted, format = false) {
+        return this.getNodesData(argWanted, {checked: true}, format);
       },
-      getOpened: function(arg_wanted, format = false) {
-        return this.getNodesData(arg_wanted, {expanded: true}, format);
+      getOpened: function(argWanted, format = false) {
+        return this.getNodesData(argWanted, {expanded: true}, format);
       },
       checkAll: function() {
         for (var i = 0; i < this.$children.length; i++) {
@@ -219,163 +234,163 @@
         }
       },
       recUpdateExpandAll: function(nodes) {
-        let opened_tmp = {};
+        let openedTmp = {};
         for (var i = 0; i < nodes.length; i++) {
-          opened_tmp[nodes[i].id] = this.recUpdateExpandAll(nodes[i].nodes);
+          openedTmp[nodes[i].id] = this.recUpdateExpandAll(nodes[i].nodes);
         }
-        return opened_tmp;
+        return openedTmp;
       },
       expandAll: function() {
         for (var i = 0; i < this.$children.length; i++) {
           this.$children[i].callNodesExpanded(true);
         }
         this.$nextTick(function() {
-          this.opened_nodes = {};
-          let opened_tmp = {};
+          this.openedNodes = {};
+          let openedTmp = {};
           for (var i = 0; i < this.nodes.length; i++) {
-            opened_tmp[this.nodes[i].id] = this.recUpdateExpandAll(this.nodes[i].nodes);
+            openedTmp[this.nodes[i].id] = this.recUpdateExpandAll(this.nodes[i].nodes);
           }
-          this.opened_nodes = opened_tmp;
+          this.openedNodes = openedTmp;
         })
       },
       collapseAll: function() {
         for (var i = 0; i < this.$children.length; i++) {
           this.$children[i].callNodesExpanded(false);
         }
-        this.opened_nodes = {};
+        this.openedNodes = {};
       },
       unselectAll: function() {
-        this.selected_node = null;
+        this.selectedNode = null;
         for (var i = 0; i < this.$children.length; i++) {
           this.$children[i].callNodesUnselect();
         }
       },
-      openNode: function(node_id, depth) {
-        var arr_ids = this.findNodePath(node_id, depth);
+      openNode: function(nodeId, depth) {
+        var arrIds = this.findNodePath(nodeId, depth);
 
-        this.nodeOpened(node_id, arr_ids);
-        this.callSpecificChild(arr_ids, 'callNodeExpanded', {
+        this.nodeOpened(nodeId, arrIds);
+        this.callSpecificChild(arrIds, 'callNodeExpanded', {
           value: true,
-          arr_ids: arr_ids
+          arrIds: arrIds
         })
       },
-      selectNode: function(node_id, depth) {
-        let node_selected = this.findNode(node_id, depth);
+      selectNode: function(nodeId, depth) {
+        let nodeSelected = this.findNode(nodeId, depth);
         let _this = this;
 
-        if (this.selected_node) {
-          let arr_ids = this.findNodePath(this.selected_node.id, this.selected_node.depth);
-          this.callSpecificChild(arr_ids, 'callNodeSelected', {value: false, arr_ids: arr_ids});
+        if (this.selectedNode) {
+          let arrIds = this.findNodePath(this.selectedNode.id, this.selectedNode.depth);
+          this.callSpecificChild(arrIds, 'callNodeSelected', {value: false, arrIds: arrIds});
         }
-        this.selected_node = node_selected;
+        this.selectedNode = nodeSelected;
 
-        if (this.selected_node) {
+        if (this.selectedNode) {
           this.$nextTick(function() {
-            let select_arr_ids = _this.findNodePath(_this.selected_node.id, _this.selected_node.depth);
-            _this.callSpecificChild(select_arr_ids, 'callNodeSelected', {value: true, arr_ids: select_arr_ids});
+            let selectArrIds = _this.findNodePath(_this.selectedNode.id, _this.selectedNode.depth);
+            _this.callSpecificChild(selectArrIds, 'callNodeSelected', {value: true, arrIds: selectArrIds});
           })
         }
       },
-      nodeOpened: function(node_id, arr_ids, depth) {
-        if (arr_ids == undefined) {
-          arr_ids = this.findNodePath(node_id, depth);
+      nodeOpened: function(nodeId, arrIds, depth) {
+        if (arrIds == undefined) {
+          arrIds = this.findNodePath(nodeId, depth);
         }
-        var hash = this.opened_nodes;
-        var tmp_elem = hash;
-        arr_ids.forEach(function(id) {
-          if (!tmp_elem[id]) {
-            tmp_elem[id] = {};
+        var hash = this.openedNodes;
+        var tmpElem = hash;
+        arrIds.forEach(function(id) {
+          if (!tmpElem[id]) {
+            tmpElem[id] = {};
           }
-          tmp_elem = tmp_elem[id];
+          tmpElem = tmpElem[id];
         })
       },
-      closeNode: function(node_id, depth) {
-        var arr_ids = this.findNodePath(node_id, depth);
-        this.nodeClosed(node_id, arr_ids);
-        this.callSpecificChild(arr_ids, 'callNodeExpanded', {
+      closeNode: function(nodeId, depth) {
+        var arrIds = this.findNodePath(nodeId, depth);
+        this.nodeClosed(nodeId, arrIds);
+        this.callSpecificChild(arrIds, 'callNodeExpanded', {
           value: false,
-          arr_ids: arr_ids
+          arrIds: arrIds
         })
       },
-      nodeClosed: function(node_id, arr_ids, depth) {
-        if (arr_ids == undefined) {
-          arr_ids = this.findNodePath(node_id, depth);
+      nodeClosed: function(nodeId, arrIds, depth) {
+        if (arrIds == undefined) {
+          arrIds = this.findNodePath(nodeId, depth);
         }
-        var hash = this.opened_nodes;
-        var tmp_elem = hash;
+        var hash = this.openedNodes;
+        var tmpElem = hash;
 
-        arr_ids.forEach(function(id, i) {
-          if (!tmp_elem[id]) {
+        arrIds.forEach(function(id, i) {
+          if (!tmpElem[id]) {
             return false;
-          } else if (i == arr_ids.length - 1 && tmp_elem[id]) {
-            delete tmp_elem[id];
+          } else if (i == arrIds.length - 1 && tmpElem[id]) {
+            delete tmpElem[id];
           }
-          tmp_elem = tmp_elem[id];
+          tmpElem = tmpElem[id];
         });
       },
-      recGetVisibleNodes: function(arr, elem, full_node) {
+      recGetVisibleNodes: function(arr, elem, fullNode) {
         let _this = this;
         let node = elem.$props.node;
-        if (full_node == true) {
+        if (fullNode == true) {
           arr.push(node);
         } else {
           arr.push(id);
         }
         
         elem.$children.forEach(function(child) {
-          arr = _this.recGetVisibleNodes(arr, child, full_node);
+          arr = _this.recGetVisibleNodes(arr, child, fullNode);
         })
         return arr;
       },
-      getVisibleNodes: function(full_node = false) {
+      getVisibleNodes: function(fullNode = false) {
         let _this = this;
         let arr = [];
 
         this.$children.forEach(function(child) {
-          arr = _this.recGetVisibleNodes(arr, child, full_node);
+          arr = _this.recGetVisibleNodes(arr, child, fullNode);
         })
         return arr;
       },
-      recGetNodesData: function(arg_wanted, conditions, nodes) {
+      recGetNodesData: function(argWanted, conditions, nodes) {
         let _this = this;
         let arr = [];
         if (nodes == undefined) return arr;
         nodes.forEach(function(node) {
           if (Object.keys(node.state).filter(key => conditions[key] == node.state[key]).length == Object.keys(conditions).length) {
-            if (Array.isArray(arg_wanted)) {
-              arr.push(Object.keys(node).filter(key => arg_wanted.includes(key)).reduce((obj, key) => {
+            if (Array.isArray(argWanted)) {
+              arr.push(Object.keys(node).filter(key => argWanted.includes(key)).reduce((obj, key) => {
                 obj[key] = node[key];
                 return obj;
                }, {}));
             } else {
-              arr.push(node[arg_wanted]);
+              arr.push(node[argWanted]);
             }
           }
-          arr = arr.concat(_this.recGetNodesData(arg_wanted, conditions, node.nodes));
+          arr = arr.concat(_this.recGetNodesData(argWanted, conditions, node.nodes));
         })
         return arr;
       },
-      recGetNodesDataWithFormat: function(arg_wanted, conditions, nodes) {
+      recGetNodesDataWithFormat: function(argWanted, conditions, nodes) {
         let _this = this;
         let arr = {};
         if (nodes == undefined) return arr;
         nodes.forEach(function(node) {
           if (Object.keys(node.state).filter(key => conditions[key] == node.state[key]).length == Object.keys(conditions).length) {
-            arr[node.id] = _this.recGetNodesDataWithFormat(arg_wanted, conditions, node.nodes);
+            arr[node.id] = _this.recGetNodesDataWithFormat(argWanted, conditions, node.nodes);
           } else {
-            Object.assign(arr, _this.recGetNodesDataWithFormat(arg_wanted, conditions, node.nodes));
+            Object.assign(arr, _this.recGetNodesDataWithFormat(argWanted, conditions, node.nodes));
           }
         })
         return arr;
       },
-      getNodesData: function(arg_wanted, conditions = {}, format = false) {
-        // arg_wanted: id -> return id, id1 etc... arg_wanted: id, name -> return {id: id, name: name}, {id: id1, name: name1}, etc
+      getNodesData: function(argWanted, conditions = {}, format = false) {
+        // argWanted: id -> return id, id1 etc... argWanted: id, name -> return {id: id, name: name}, {id: id1, name: name1}, etc
         // conditions {checked: true} conditions {checked: true, selected: true}
         let arr = null;
         if (format == false) {
-          arr = this.recGetNodesData(arg_wanted, conditions, this.nodes);
+          arr = this.recGetNodesData(argWanted, conditions, this.nodes);
         } else {
-          arr = this.recGetNodesDataWithFormat(arg_wanted, conditions, this.nodes);
+          arr = this.recGetNodesDataWithFormat(argWanted, conditions, this.nodes);
         }
         return arr;
       }
@@ -385,20 +400,20 @@
   /*
   ** Methods:
   ** 
-  ** checkNode: take a node_id and check it
+  ** checkNode: take a nodeId and check it
   ** uncheckNode
   ** getSelected: get selected node
   ** getChecked : getNodesData alias, get checked ids or nodes
   ** getOpened: getNodesData alias, get expanded ids or nodes
   ** checkAll: check all nodes
   ** uncheckAll
-  ** openNode: take a node_id and check it
+  ** openNode: take a nodeId and check it
   ** closeNode
   ** selectNode: select a node
   ** expandAll: expand all nodes
   ** collapseAll
   ** unselectAll: select all nodes
-  ** findNode: take a node_id and return the node
+  ** findNode: take a nodeId and return the node
   ** getVisibleNodes: get array of all visible nodes or ids
   **
   */
