@@ -234,7 +234,7 @@
         for (var i = 0; i < this.$children.length; i++) {
           this.$children[i].callNodesUnselect();
         }
-        if (this.$children.length == 0 && this.node.nodes.length > 0) {
+        if (this.$children.length == 0 && this.node.nodes&& this.node.nodes.length > 0) {
           this.recCallNodes(false, "selected", this.node.nodes);
         }
       },
