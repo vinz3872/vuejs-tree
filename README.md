@@ -207,6 +207,7 @@ Used to display node's children.
 
 Here is an example of a customOptions hash the tree take.
 I suggest you to use a vuejs computed function if you want to use function pointer.
+For the icons, it's only compatible with `Font Awesome`.
 
 ```javascript
 var customOptions = {
