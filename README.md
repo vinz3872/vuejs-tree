@@ -6,7 +6,8 @@ VueJS Tree
 A highly customizable vuejs tree viewer
 
 
-*screenshot*
+![tree](https://raw.githubusercontent.com/scalia/vuejs-tree/7b6d80f7362cdaf0da9eba9997a9b132c5b99e7b/images/tree.png)
+
 
 ## Getting Started
 
@@ -49,7 +50,7 @@ Or add the following lines in your Vue instance.
 ```vue
   import Tree from 'vuejs-tree'
 
-  
+
   // in your vue instance
   components: {
     'tree': Tree
