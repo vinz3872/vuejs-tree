@@ -32,15 +32,24 @@ Add the following lines at the top of your .js file who contain your Vue instanc
 ```vue
   import Tree from 'vuejs-tree'
   Vue.use(Tree)
-  
+
 ```
 
 Or add the following lines in your Vue instance.
 
 ```vue
+  import Tree from 'vuejs-tree'
+
   components: {
     'tree': Tree
   },
+  methods: {
+    getTree: function(treeId) {
+      for (var i = 0; i <= this.$children.length - 1; i++) {
+        if (this.$children[i].$props.id == treeId) return this.$children[i]
+      }
+    }
+  }
 ```
 
 
@@ -224,7 +233,7 @@ var customOptions = {
     }
   }
 }
-``` 
+```
 
 
 Option name       | detail
@@ -235,7 +244,7 @@ selectedIcon      | node's icon when selected
 selectedIconColor | node icon's color when selected
 addElemIcon       | icon to add a node
 addElemIconColor  | add node icon's color
-style             | 
+style             |
 tree              | override default tree css
 row               | override default tree node css
 
@@ -281,7 +290,7 @@ Called when a node is checked.
 #### editableName
 You can call a special function who can be used to edit a node, usually with Ajax request, if you assign it's pointer
 `treeOptions.events.editableName.fn`
-Or you can call an existing event by assigining it's name in 
+Or you can call an existing event by assigining it's name in
 `treeOptions.events.editableName.calledEvent`
 example : `treeOptions.events.editableName.calledEvent = 'selected'`
 
@@ -348,3 +357,9 @@ Check a node.
 
 #### getNodesData(argWanted, conditions = {}, format = false)
 Customizable function that return nodes.
+
+### Get the tree instance
+
+If you want to call any tree method, you need to get the instance.
+
+For that you just need to call the `getTree` function and provide your tree `id`.

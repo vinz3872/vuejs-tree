@@ -3,7 +3,7 @@
     <ul
       :style="options.style.tree"
       v-if="force">
-      <template 
+      <template
         v-for="node in nodes"
         :key="node.id">
         <tree-row
@@ -336,7 +336,7 @@
         } else {
           arr.push(id);
         }
-        
+
         elem.$children.forEach(function(child) {
           arr = _this.recGetVisibleNodes(arr, child, fullNode);
         })
@@ -396,34 +396,4 @@
       }
     }
   }
-
-  /*
-  ** Methods:
-  ** 
-  ** checkNode: take a nodeId and check it
-  ** uncheckNode
-  ** getSelected: get selected node
-  ** getChecked : getNodesData alias, get checked ids or nodes
-  ** getOpened: getNodesData alias, get expanded ids or nodes
-  ** checkAll: check all nodes
-  ** uncheckAll
-  ** openNode: take a nodeId and check it
-  ** closeNode
-  ** selectNode: select a node
-  ** expandAll: expand all nodes
-  ** collapseAll
-  ** unselectAll: select all nodes
-  ** findNode: take a nodeId and return the node
-  ** getVisibleNodes: get array of all visible nodes or ids
-  **
-  */
-
-  // function to get tree by id
-  // use this or vm_var_name
-  // function getTree(tree_id) {
-  //   for (var i = 0; i <= vm.$children.length - 1; i++) {
-  //     if (vm.$children[i].$props.id == tree_id) return vm.$children[i]
-  //   }
-  // }
-
 </script>
