@@ -329,44 +329,44 @@ Check a node.
 #### uncheckNode(nodeId, depth)
 Uncheck a node.
 
-#### getSelected()
+#### getSelectedNode()
 Return the selected node if you have selected a node.
 
-#### getChecked(argWanted, format = false)
+#### getCheckedNodes(argWanted, format = false)
 Return all checked nodes.
 
-#### getOpened(argWanted, format = false)
-Return all opened nodes.
+#### getExpandedNodes(argWanted, format = false)
+Return all expanded nodes.
 
-#### checkAll()
+#### checkAllNodes()
 Check all nodes.
 
-#### uncheckAll()
+#### uncheckAllNodes()
 Uncheck all nodes.
 
-#### openNode(nodeId, depth)
+#### expandNode(nodeId, depth)
 Expand a node.
 
-#### closeNode(nodeId, depth)
+#### collapseNode(nodeId, depth)
 Collapse a node.
 
 #### selectNode(nodeId, depth)
 Select a node and deselect the previously selected node if exist.
 
-#### expandAll()
+#### expandAllNodes()
 Expand all nodes.
 
-#### collapseAll()
+#### collapseAllNodes()
 Collapse all nodes.
 
-#### unselectAll()
-Unselect all nodes.
+#### deselectAllNodes()
+Deselect all nodes.
 
 #### findNode(nodeId, maxDepth = 9999)
 Find and return a node.
 
 #### getVisibleNodes(fullNode = false)
-Check a node.
+Get all visible nodes.
 
 #### getNodesData(argWanted, conditions = {}, format = false)
 Customizable function that return nodes.

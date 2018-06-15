@@ -59,7 +59,7 @@
           }
         },
         selectedNode: null,
-        openedNodes: {},
+        expandedNodes: {},
         force: true
       }
     },
@@ -167,9 +167,9 @@
       },
       nodeExpanded: function(node, state) { // called when a TreeRow is expanded or closed
         if (state == false) {
-          this.nodeClosed(node.id, null, node.depth);
+          this.nodeCollapsed(node.id, null, node.depth);
         } else {
-          this.nodeOpened(node.id, null, node.depth);
+          this.nodeExpanded(node.id, null, node.depth);
         }
         var fn = null;
         if (state == true && this.options.treeEvents.expanded && this.options.treeEvents.expanded.state == true) {
@@ -214,21 +214,21 @@
       uncheckNode: function(nodeId, depth) {
         this.doCheckNode(nodeId, depth, false);
       },
-      getSelected: function() {
+      getSelectedNode: function() {
         return this.selectedNode;
       },
-      getChecked: function(argWanted, format = false) {
+      getCheckedNodes: function(argWanted, format = false) {
         return this.getNodesData(argWanted, {checked: true}, format);
       },
-      getOpened: function(argWanted, format = false) {
+      getExpandedNodes: function(argWanted, format = false) {
         return this.getNodesData(argWanted, {expanded: true}, format);
       },
-      checkAll: function() {
+      checkAllNodes: function() {
         for (var i = 0; i < this.$children.length; i++) {
           this.$children[i].callNodesChecked(true);
         }
       },
-      uncheckAll: function() {
+      uncheckAllNodes: function() {
         for (var i = 0; i < this.$children.length; i++) {
           this.$children[i].callNodesChecked(false);
         }
@@ -240,35 +240,35 @@
         }
         return openedTmp;
       },
-      expandAll: function() {
+      expandAllNodes: function() {
         for (var i = 0; i < this.$children.length; i++) {
           this.$children[i].callNodesExpanded(true);
         }
         this.$nextTick(function() {
-          this.openedNodes = {};
+          this.expandedNodes = {};
           let openedTmp = {};
           for (var i = 0; i < this.nodes.length; i++) {
             openedTmp[this.nodes[i].id] = this.recUpdateExpandAll(this.nodes[i].nodes);
           }
-          this.openedNodes = openedTmp;
+          this.expandedNodes = openedTmp;
         })
       },
-      collapseAll: function() {
+      collapseAllNodes: function() {
         for (var i = 0; i < this.$children.length; i++) {
           this.$children[i].callNodesExpanded(false);
         }
-        this.openedNodes = {};
+        this.expandedNodes = {};
       },
-      unselectAll: function() {
+      deselectAllNodes: function() {
         this.selectedNode = null;
         for (var i = 0; i < this.$children.length; i++) {
-          this.$children[i].callNodesUnselect();
+          this.$children[i].callNodesDeselect();
         }
       },
-      openNode: function(nodeId, depth) {
+      expandNode: function(nodeId, depth) {
         var arrIds = this.findNodePath(nodeId, depth);
 
-        this.nodeOpened(nodeId, arrIds);
+        this.nodeExpanded(nodeId, arrIds);
         this.callSpecificChild(arrIds, 'callNodeExpanded', {
           value: true,
           arrIds: arrIds
@@ -291,11 +291,11 @@
           })
         }
       },
-      nodeOpened: function(nodeId, arrIds, depth) {
+      nodeExpanded: function(nodeId, arrIds, depth) {
         if (arrIds == undefined) {
           arrIds = this.findNodePath(nodeId, depth);
         }
-        var hash = this.openedNodes;
+        var hash = this.expandedNodes;
         var tmpElem = hash;
         arrIds.forEach(function(id) {
           if (!tmpElem[id]) {
@@ -304,19 +304,19 @@
           tmpElem = tmpElem[id];
         })
       },
-      closeNode: function(nodeId, depth) {
+      collapseNode: function(nodeId, depth) {
         var arrIds = this.findNodePath(nodeId, depth);
-        this.nodeClosed(nodeId, arrIds);
+        this.nodeCollapsed(nodeId, arrIds);
         this.callSpecificChild(arrIds, 'callNodeExpanded', {
           value: false,
           arrIds: arrIds
         })
       },
-      nodeClosed: function(nodeId, arrIds, depth) {
+      nodeCollapsed: function(nodeId, arrIds, depth) {
         if (arrIds == undefined) {
           arrIds = this.findNodePath(nodeId, depth);
         }
-        var hash = this.openedNodes;
+        var hash = this.expandedNodes;
         var tmpElem = hash;
 
         arrIds.forEach(function(id, i) {

@@ -228,11 +228,11 @@
           this.recCallNodes(state, "checked", this.node.nodes);
         }
       },
-      callNodesUnselect: function() {
+      callNodesDeselect: function() {
         this.selected = false;
         this.node.state.selected = this.selected;
         for (var i = 0; i < this.$children.length; i++) {
-          this.$children[i].callNodesUnselect();
+          this.$children[i].callNodesDeselect();
         }
         if (this.$children.length == 0 && this.node.nodes&& this.node.nodes.length > 0) {
           this.recCallNodes(false, "selected", this.node.nodes);
@@ -388,4 +388,3 @@
   font-weight: normal;
 }
 </style>
-
