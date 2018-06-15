@@ -3,13 +3,12 @@
     <ul
       :style="options.style.tree"
       v-if="force">
-      <template
-        v-for="node in nodes"
-        :key="node.id">
+      <template v-for="node in nodes">
         <tree-row
           v-on:emitNodeSelected="nodeSelected"
           v-on:emitNodeExpanded="nodeExpanded"
           v-on:emitNodeChecked="nodeChecked"
+          :key="node.id"
           :node="node"
           :depth="1"
           :custom-options="customOptions"

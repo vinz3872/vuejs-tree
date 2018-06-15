@@ -218,7 +218,7 @@ var customOptions = {
   addElemIcon: 'fa-plus',
   addElemIconColor: '#007AD5',
   style: {
-    tree: 'overflow: hidden; border: none;'
+    tree: 'overflow: hidden; border: none;',
     row: 'background-color: blue;'
   },
   treeEvents: {

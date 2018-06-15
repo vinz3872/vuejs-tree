@@ -62,10 +62,9 @@
       </span>
     </div>
     <ul v-if="expanded">
-      <template
-        v-for="child in node.nodes"
-        :key="child.id">
+      <template v-for="child in node.nodes">
         <tree-row
+          :key="child.id"
           :node="child"
           :depth="depth + 1"
           :custom-options="customOptions"
