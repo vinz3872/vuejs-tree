@@ -30,7 +30,7 @@ $ npm install vuejs-tree
 
 Add the following lines at the top of your .js file who contain your Vue instance.
 
-```vue
+```javascript
   import Tree from 'vuejs-tree'
   Vue.use(Tree)
 
@@ -47,7 +47,7 @@ Add the following lines at the top of your .js file who contain your Vue instanc
 
 Or add the following lines in your Vue instance.
 
-```vue
+```javascript
   import Tree from 'vuejs-tree'
 
 
