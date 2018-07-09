@@ -32,23 +32,6 @@ Add the following lines at the top of your .js file which contains your Vue inst
 
 ```javascript
   import Tree from 'vuejs-tree'
-  Vue.use(Tree)
-
-  // in your vue instance
-  methods: {
-    getTree: function(treeId) {
-      for (var i = 0; i < this.$children.length; i++) {
-        if (this.$children[i].$props.id == treeId) return this.$children[i]
-      }
-    }
-  }
-
-```
-
-Or add the following lines in your Vue instance.
-
-```javascript
-  import Tree from 'vuejs-tree'
 
 
   // in your vue instance
