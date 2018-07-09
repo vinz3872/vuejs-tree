@@ -177,7 +177,7 @@
         if (eventType == 'editableName' && this.options.events['editableName'].calledEvent) {
           this.toggleEvent(this.options.events['editableName'].calledEvent, node);
         } else if (this.options.events[eventType].state == true) {
-          var fnName = this.options.events[eventType].fn;
+          const fnName = this.options.events[eventType].fn;
           fnName(node, this);
         }
       },
@@ -211,7 +211,7 @@
         this.$emit('emitNodeChecked', nodeChecked);
       },
       recCallNodes: function(state, event, nodes) {
-        let _this = this;
+        const _this = this;
         nodes.forEach(function(node) {
           if (!node.state) node.state = {checked: false, expanded: false, selected: false}
           node.state[event] = state;
@@ -222,7 +222,7 @@
       },
       callNodesChecked: function(state) {
         this.checked = state;
-        for (var i = 0; i < this.$children.length; i++) {
+        for (let i = 0; i < this.$children.length; i++) {
           this.$children[i].callNodesChecked(state);
         }
         if (this.$children.length == 0 && this.node.nodes && this.node.nodes.length > 0) {
@@ -232,7 +232,7 @@
       callNodesDeselect: function() {
         this.selected = false;
         this.node.state.selected = this.selected;
-        for (var i = 0; i < this.$children.length; i++) {
+        for (let i = 0; i < this.$children.length; i++) {
           this.$children[i].callNodesDeselect();
         }
         if (this.$children.length == 0 && this.node.nodes&& this.node.nodes.length > 0) {
@@ -240,8 +240,8 @@
         }
       },
       callSpecificChild: function(arrIds, fname, args) {
-        for (var i = 0; i < this.$children.length; i++) {
-          var currentNodeId = this.$children[i].$props.node.id;
+        for (let i = 0; i < this.$children.length; i++) {
+          let currentNodeId = this.$children[i].$props.node.id;
           if (arrIds.find(x => x == currentNodeId)) {
             this.$children[i][fname](args);
             return false;
@@ -249,8 +249,8 @@
         }
       },
       callNodeChecked: function(args) {
-        var arrIds = args.arrIds;
-        var value = args.value;
+        const arrIds = args.arrIds;
+        const value = args.value;
         if (arrIds.last() == this.node.id) {
           this.checked = value;
           this.callNodesChecked(this.checked);
@@ -262,8 +262,8 @@
         }
       },
       callNodeSelected: function(args) {
-        var arrIds = args.arrIds;
-        var value = args.value;
+        const arrIds = args.arrIds;
+        const value = args.value;
         if (arrIds.last() == this.node.id) {
           this.selected = value;
         } else {
@@ -277,13 +277,13 @@
         if (!(this.node.text == 'All' && state != true)) {
           this.expanded = state;
         }
-        for (var i = 0; i < this.$children.length; i++) {
+        for (let i = 0; i < this.$children.length; i++) {
           this.$children[i].callNodesExpanded(state);
         }
       },
       callNodeExpanded: function(args) {
-        var arrIds = args.arrIds;
-        var value = args.value;
+        const arrIds = args.arrIds;
+        const value = args.value;
         if (value == false && this.expanded == false) return;
         if (arrIds.last() != this.node.id) {
           this.expanded = true;
@@ -298,7 +298,7 @@
         this.node.depth = this.depth;
         if (this.customOptions) {
           if (this.customOptions.events) {
-            var events = this.customOptions.events;
+            const events = this.customOptions.events;
             if (events.expanded) {
               if (events.expanded.state != undefined) this.options.events.expanded.state = events.expanded.state;
               if (events.expanded.fn) this.options.events.expanded.fn = events.expanded.fn;

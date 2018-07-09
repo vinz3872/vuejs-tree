@@ -252,18 +252,18 @@ row               | override default tree node css
 You can call your own function here by assigning a function pointer in the tree options and changing it's state to true.
 These functions are called after all tree modification.
 
-#### nodeSelected
+#### onNodeSelected
 Called when a node is selected.
 `treeOptions.treeEvents.selected.fn`
 
-#### nodeExpanded && nodeCollapsed
+#### onNodeExpanded && onNodeCollapsed
 Called when a node is expanded.
 `treeOptions.treeEvents.expanded.fn`
 
 Called when a node is collapsed.
 `treeOptions.treeEvents.collapsed.fn`
 
-#### nodeChecked
+#### onNodeChecked
 Called when a node is collapsed.
 `treeOptions.treeEvents.checked.fn`
 
