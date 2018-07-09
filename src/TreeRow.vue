@@ -144,6 +144,7 @@
     },
     mounted: function() {
       this.initEvents();
+      if (!this.node.state) this.node.state = {checked: false, expanded: false, selected: false}
       if (this.node.checked != undefined && this.node.checked == false) {
         this.checked = false;
         this.node.state.checked = this.checked;
@@ -172,9 +173,9 @@
       }
     },
     methods: {
-      toggleEvent: function(eventType, node, classNeeded, event) {
+      toggleEvent: function(eventType, node) {
         if (eventType == 'editableName' && this.options.events['editableName'].calledEvent) {
-          this.toogleEvent(this.options.events['editableName'].calledEvent, node, classNeeded, event);
+          this.toggleEvent(this.options.events['editableName'].calledEvent, node);
         } else if (this.options.events[eventType].state == true) {
           var fnName = this.options.events[eventType].fn;
           fnName(node, this);
@@ -212,6 +213,7 @@
       recCallNodes: function(state, event, nodes) {
         let _this = this;
         nodes.forEach(function(node) {
+          if (!node.state) node.state = {checked: false, expanded: false, selected: false}
           node.state[event] = state;
           if (node.nodes) {
             _this.recCallNodes(state, event, node.nodes);
