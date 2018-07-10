@@ -374,7 +374,7 @@
         let arr = [];
         if (nodes == undefined) return arr;
         nodes.forEach(function(node) {
-          if (Object.keys(node.state).filter(key => conditions[key] == node.state[key]).length == Object.keys(conditions).length) {
+          if (node.state && Object.keys(node.state).filter(key => conditions[key] == node.state[key]).length == Object.keys(conditions).length) {
             if (Array.isArray(argWanted)) {
               arr.push(Object.keys(node).filter(key => argWanted.includes(key)).reduce((obj, key) => {
                 obj[key] = node[key];
@@ -391,9 +391,10 @@
       recGetNodesDataWithFormat: function(argWanted, conditions, nodes) {
         const _this = this;
         let arr = {};
-        if (nodes == undefined) return arr;
+        if (nodes == undefined || nodes.length == 0) return arr;
         nodes.forEach(function(node) {
-          if (Object.keys(node.state).filter(key => conditions[key] == node.state[key]).length == Object.keys(conditions).length) {
+
+          if (node.state && Object.keys(node.state).filter(key => conditions[key] == node.state[key]).length == Object.keys(conditions).length) {
             arr[node.id] = _this.recGetNodesDataWithFormat(argWanted, conditions, node.nodes);
           } else {
             Object.assign(arr, _this.recGetNodesDataWithFormat(argWanted, conditions, node.nodes));
