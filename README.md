@@ -121,7 +121,7 @@ The Following properties define a node level css and behavior.
 
 Used in the tree to differentiate each nodes.
 
-#### name
+#### text
 `String` --> `Mandatory`
 
 The text value displayed at the right of the node icons.
