@@ -67,10 +67,14 @@
     },
     mounted: function() {
       this.initTree();
-      },
-      methods: {
-        forceRender: function(nodes) {
-          this.nodes = nodes;
+    },
+    methods: {
+      forceRender: function(nodes) {
+        const _this = this;
+        this.nodes = [];
+        this.$nextTick(function() {
+          _this.nodes = nodes;
+        });
       },
       initTree: function() {
         if (this.customOptions) {
@@ -98,7 +102,7 @@
           }
         }
       },
-      findNodePathRec: function(nodeId, nodes, depth, maxDepth) {
+      recFindNodePath: function(nodeId, nodes, depth, maxDepth) {
         const _this = this;
         let ret = [];
 
@@ -107,7 +111,7 @@
           if (nodeId == node.id && maxDepth >= depth) {
             ret.unshift(node.id);
             return false;
-          } else if (node.nodes && maxDepth > depth && (tmp = _this.findNodePathRec(nodeId, node.nodes, depth+1, maxDepth)) != null) {
+          } else if (node.nodes && maxDepth > depth && (tmp = _this.recFindNodePath(nodeId, node.nodes, depth + 1, maxDepth)) != null) {
             tmp.unshift(node.id);
             ret = tmp;
             return false;
@@ -118,17 +122,18 @@
         return ret;
       },
       findNodePath: function(nodeId, maxDepth = 9999) {
-        return this.findNodePathRec(nodeId, this.nodes, 1, maxDepth)
+        return this.recFindNodePath(nodeId, this.nodes, 1, maxDepth)
       },
-      findNodeRec: function(nodeId, nodes, depth, maxDepth) {
+      recFindNode: function(nodeId, nodes, depth, maxDepth) {
         const _this = this;
+        let ret = null;
 
         nodes.forEach(function(node) {
           let tmp = [];
           if (nodeId == node.id && maxDepth >= depth) {
             ret = node;
             return false;
-          } else if (node.nodes && maxDepth > depth && (tmp = _this.findNodeRec(nodeId, node.nodes, depth+1, maxDepth)) != null) {
+          } else if (node.nodes && maxDepth > depth && (tmp = _this.recFindNode(nodeId, node.nodes, depth+1, maxDepth)) != null) {
             ret = tmp;
             return false;
           }
@@ -137,7 +142,7 @@
         return ret;
       },
       findNode: function(nodeId, maxDepth = 9999) {
-        return this.findNodeRec(nodeId, this.node.nodes, 1, maxDepth)
+        return this.recFindNode(nodeId, this.nodes, 1, maxDepth)
       },
       onNodeSelected: function(nodeSelected) { // called when a TreeRow is selected
         const _this = this;
@@ -233,31 +238,44 @@
           this.$children[i].callNodesChecked(false);
         }
       },
-      recUpdateExpandAll: function(nodes) {
+      recExpandAllNodes: function(nodes) {
         const openedTmp = {};
         for (let i = 0; i < nodes.length; i++) {
-          openedTmp[nodes[i].id] = this.recUpdateExpandAll(nodes[i].nodes);
+          nodes[i].state.expanded = true;
+          if (nodes[i].nodes) {
+            openedTmp[nodes[i].id] = this.recExpandAllNodes(nodes[i].nodes);
+          }
         }
         return openedTmp;
       },
       expandAllNodes: function() {
-        for (let i = 0; i < this.$children.length; i++) {
-          this.$children[i].callNodesExpanded(true);
-        }
-        this.$nextTick(function() {
-          this.expandedNodes = {};
-          const openedTmp = {};
-          for (let i = 0; i < this.nodes.length; i++) {
-            openedTmp[this.nodes[i].id] = this.recUpdateExpandAll(this.nodes[i].nodes);
+        const _this = this;
+        const openedTmp = {};
+        for (let i = 0; i < this.nodes.length; i++) {
+          this.nodes[i].state.expanded = true;
+            if (this.nodes[i].nodes) {
+              openedTmp[this.nodes[i].id] = this.recExpandAllNodes(this.nodes[i].nodes);
+            }
           }
-          this.expandedNodes = openedTmp;
-        })
+        this.expandedNodes = openedTmp;
+        this.forceRender(this.nodes);
+      },
+      recCollapseAllNodes: function(hashIds) {
+        const _this = this;
+        Object.entries(hashIds).forEach(function(arr) {
+          _this.findNode(arr[0]).state.expanded = false;
+          if (arr[1] && Object.keys(arr[1]).length > 0) _this.recCollapseAllNodes(arr[1]);
+        });
       },
       collapseAllNodes: function() {
-        for (let i = 0; i < this.$children.length; i++) {
-          this.$children[i].callNodesExpanded(false);
-        }
+        const _this = this;
+        let childNode;
+        Object.entries(this.expandedNodes).forEach(function(arr) {
+          _this.findNode(arr[0]).state.expanded = false;
+          if (arr[1] && Object.keys(arr[1]).length > 0) _this.recCollapseAllNodes(arr[1]);
+        });
         this.expandedNodes = {};
+        this.forceRender(this.nodes);
       },
       deselectAllNodes: function() {
         this.selectedNode = null;
@@ -334,7 +352,7 @@
         if (fullNode == true) {
           arr.push(node);
         } else {
-          arr.push(id);
+          arr.push(node.id);
         }
 
         elem.$children.forEach(function(child) {

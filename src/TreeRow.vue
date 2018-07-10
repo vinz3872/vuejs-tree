@@ -144,32 +144,12 @@
     },
     mounted: function() {
       this.initEvents();
-      if (!this.node.state) this.node.state = {checked: false, expanded: false, selected: false}
-      if (this.node.checked != undefined && this.node.checked == false) {
-        this.checked = false;
-        this.node.state.checked = this.checked;
-      } else if (this.parentNode.state.checked) {
-        this.checked = this.parentNode.state.checked;
-        this.node.state.checked = this.checked;
-      } else {
-        this.checked = false;
-        this.node.state.checked = this.checked;
-      }
-
-      if (this.node.state.expanded == undefined) {
-        this.expanded = false;
-        this.node.state.expanded = this.expanded;
-      }
-      if (this.node.state.expanded == true) {
+      if (this.node.state) {
+        this.checked = this.node.state.checked;
         this.expanded = this.node.state.expanded;
-      }
-
-      if (this.node.state.selected == undefined) {
-        this.selected = false;
-        this.node.state.selected = this.selected;
-      }
-      if (this.node.state.selected == true) {
         this.selected = this.node.state.selected;
+      } else {
+        this.node.state = {checked: false, expanded: false, selected: false}
       }
     },
     methods: {
@@ -191,7 +171,7 @@
       toggleSelected: function(node, instance) {
         this.selected = !this.selected;
         this.node.state.selected = this.selected;
-        this.$emit('nodeSelected', node);
+        this.$emit('emitNodeSelected', node);
       },
       toggleChecked: function(node, instance) {
         this.checked = !this.checked;
@@ -271,14 +251,6 @@
           this.$nextTick(function() {
             this.callSpecificChild(arrIds, 'callNodeSelected', args);
           })
-        }
-      },
-      callNodesExpanded: function(state) {
-        if (!(this.node.text == 'All' && state != true)) {
-          this.expanded = state;
-        }
-        for (let i = 0; i < this.$children.length; i++) {
-          this.$children[i].callNodesExpanded(state);
         }
       },
       callNodeExpanded: function(args) {
