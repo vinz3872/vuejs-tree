@@ -4,9 +4,9 @@
     :data-id="node.id"
     :style="options.style.row"
     v-on:click.stop="toggleEvent('selected', node, 'node', $event)">
-    <div style="height: 35px;">
+    <div :style="options.style.row.child">
       <span v-on:click.stop="options.events.expanded.state == true && node.nodes != undefined && node.nodes.length > 0 && toggleEvent('expanded', node)">
-        <span v-for="count in depth" class="tree-indent"></span>
+        <span v-for="(count, index) in depth" class="tree-indent" v-bind:key="index"></span>
         <i
           v-if="options.events.expanded.state == true && node.nodes != undefined && node.nodes.length > 0"
           class="fa"
@@ -119,7 +119,13 @@
             }
           },
           style: {
-            row: 'width: 500px;cursor: pointer;'
+            row: {
+              width: '500px',
+              cursor: 'pointer',
+              child: {
+                height: '35px'
+              },
+            },
           },
           addNodes: {state: false, fn: null},
           showTags: false,
@@ -269,6 +275,9 @@
       initEvents: function() {
         this.node.depth = this.depth;
         if (this.customOptions) {
+          this.options.events.checked.state = this.node.checkable != undefined ? this.node.checkable : true;
+          this.options.events.selected.state = this.node.selectable != undefined ? this.node.selectable : true;
+          this.options.events.expanded.state = this.node.expandable != undefined ? this.node.expandable : true;
           if (this.customOptions.events) {
             const events = this.customOptions.events;
             if (events.expanded) {
@@ -289,17 +298,11 @@
               if (events.editableName.calledEvent) this.options.events.editableName.calledEvent = events.editableName.calledEvent;
             }
           }
-          if (this.node.checkable != undefined) {
-            this.options.events.checked.state = this.node.checkable;
-          }
-          if (this.node.selectable != undefined) {
-            this.options.events.selected.state = this.node.selectable;
-          }
-          if (this.node.expandable != undefined) {
-            this.options.events.expanded.state = this.node.expandable;
-          }
           if (this.customOptions.style && this.customOptions.style.row) {
             this.options.style.row = this.customOptions.style.row;
+          }
+          if (this.customOptions.style && this.customOptions.style.row.child) {
+            this.options.style.row.child = this.customOptions.style.row.child;
           }
           if (this.customOptions.icon) {
             this.options.icon = this.customOptions.icon;
@@ -340,24 +343,25 @@
 </script>
 
 
-<style lang="scss">
-.tree-indent {
-  margin-left: 10px;
-  margin-right: 10px;
-  display: inline-block;
-}
-.small-tree-indent {
-  margin-left: 3px;
-  margin-right: 3px;
-  display: inline-block;
-}
-
-.capitalize {
-  text-transform: capitalize;
-}
-
-.badge {
-  font-size: 12px;
-  font-weight: normal;
-}
+<style lang="scss" scoped>
+  .tree-indent {
+    margin-left: 10px;
+    margin-right: 10px;
+    display: inline-block;
+    & + .fa {
+      margin: 0 5px 0 0;
+    }
+  }
+  .small-tree-indent {
+    margin-left: 3px;
+    margin-right: 3px;
+    display: inline-block;
+  }
+  .capitalize {
+    text-transform: capitalize;
+  }
+  .badge {
+    font-size: 12px;
+    font-weight: normal;
+  }
 </style>

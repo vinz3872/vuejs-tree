@@ -36,7 +36,13 @@
       return {
         options: {
           style: {
-            tree: 'height: auto;max-height: 500px;overflow-y: scroll;border: 1px solid #ddd;display: inline-block;',
+            tree: {
+              height: "auto",
+              maxHeight: "500px",
+              overflowY: "scroll",
+              border: "1px solid #ddd",
+              display: "inline-block"
+            },
           },
           treeEvents: {
             expanded: {
@@ -179,7 +185,7 @@
         let fn = null;
         if (state == true && this.options.treeEvents.expanded && this.options.treeEvents.expanded.state == true) {
           fn = this.customOptions.treeEvents.expanded.fn;
-        } else if (this.options.treeEvents.collapsed.state == true && this.options.treeEvents.collapsed.state == true) {
+        } else if (this.options.treeEvents.collapsed && this.options.treeEvents.collapsed.state == true) {
           fn = this.customOptions.treeEvents.collapsed.fn;
         }
         if (fn){
@@ -379,7 +385,7 @@
               arr.push(Object.keys(node).filter(key => argWanted.includes(key)).reduce((obj, key) => {
                 obj[key] = node[key];
                 return obj;
-               }, {}));
+              }, {}));
             } else {
               arr.push(node[argWanted]);
             }

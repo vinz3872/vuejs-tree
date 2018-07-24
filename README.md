@@ -194,15 +194,22 @@ For the icons, it's only compatible with `Font Awesome`.
 
 ```javascript
 var customOptions = {
-  icon: "fa-folder",
-  iconColor: "#007AD5",
-  selectedIcon: "fa-folder-open",
-  selectedIconColor: "#2ECC71",
+  icon: 'fa-folder',
+  iconColor: '#007AD5',
+  selectedIcon: 'fa-folder-open',
+  selectedIconColor: '#2ECC71',
   addElemIcon: 'fa-plus',
   addElemIconColor: '#007AD5',
   style: {
-    tree: 'overflow: hidden; border: none;',
-    row: 'background-color: blue;'
+    tree: {
+      border: 'none',
+    },
+    row: {
+      cursor: 'pointer',
+      child: {
+        height: '35px'
+      },
+    },
   },
   treeEvents: {
     expanded: {
@@ -228,22 +235,24 @@ var customOptions = {
       calledEvent: 'expanded'
     }
   }
+  showTags: true,
 }
 ```
 
 
 Option name       | detail
 ------------------|-------
-icon              | node folder icon
-iconColor         | folder's icon color
-selectedIcon      | node's icon when selected
-selectedIconColor | node icon's color when selected
-addElemIcon       | icon to add a node
-addElemIconColor  | add node icon's color
-style             |
-tree              | override default tree css
-row               | override default tree node css
-
+showTags          | Boolean - show counter of nodes
+icon              | String - node folder icon
+iconColor         | String - folder's icon color
+selectedIcon      | String - node's icon when selected
+selectedIconColor | String - node icon's color when selected
+addElemIcon       | String - icon to add a node
+addElemIconColor  | String - add node icon's color
+style             | Object - contains tree and row
+tree              | Object - override default tree css
+row               | Object - override default tree node css
+child             | Object - override style of <div> into the <li> row (e.g. you can manage the height of the row)
 
 
 ## Events
