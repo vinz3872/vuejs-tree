@@ -301,7 +301,7 @@
           if (this.customOptions.style && this.customOptions.style.row) {
             this.options.style.row = this.customOptions.style.row;
           }
-          if (this.customOptions.style && this.customOptions.style.row.child) {
+          if (this.customOptions.style && this.customOptions.style.row && this.customOptions.style.row.child) {
             this.options.style.row.child = this.customOptions.style.row.child;
           }
           if (this.customOptions.icon) {
