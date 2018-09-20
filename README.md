@@ -257,7 +257,7 @@ deleteElemIconColor  | String - delete node icon's color
 style                | Object - contains tree and row
 tree                 | Object - override default tree css
 row                  | Object - override default tree node css
-child                | Object - override style of <div> into the <li> row (e.g. you can manage the height of the row)
+child                | Object - override style of `<div>` into the `<li>` row (e.g. you can manage the height of the row)
 addNode              | Object - show a button to add a node
 editNode             | Object - show a button to edit a node
 deleteNode           | Object - show a button to delete a node
