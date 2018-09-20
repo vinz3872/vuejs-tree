@@ -102,11 +102,11 @@
     props: {
       node: {
         type: Object,
-        required: true
+        required: true,
       },
       depth: Number,
       customOptions: Object,
-      parentNode: Object
+      parentNode: Object,
     },
     data: function() {
       return {
@@ -120,24 +120,24 @@
           editElemIcon: 'fa-pencil',
           editElemIconColor: '#007AD5',
           deleteElemIcon: 'fa-times',
-          deleteElemIconColor: '#007AD5',
+          deleteElemIconColor: '#EE5F5B',
           events: {
             expanded: {
               state: true,
-              fn: this.toggleExpanded
+              fn: this.toggleExpanded,
             },
             selected: {
               state: true,
-              fn: this.toggleSelected
+              fn: this.toggleSelected,
             },
             checked: {
               state: true,
-              fn: this.toggleChecked
+              fn: this.toggleChecked,
             },
             editableName: {
               state: false,
               fn: null,
-              calledEvent: null
+              calledEvent: null,
             }
           },
           style: {
@@ -145,7 +145,7 @@
               width: '500px',
               cursor: 'pointer',
               child: {
-                height: '35px'
+                height: '35px',
               },
             },
           },
