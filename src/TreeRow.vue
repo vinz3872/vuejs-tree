@@ -45,11 +45,29 @@
         {{ node.text }}
       </span>
       <span
-        v-if="options.addNodes.state == true"
-        v-on:click='options.addNodes.fn(node)'>
+        v-if="options.addNode.state == true"
+        v-on:click='options.addNode.fn(node)'>
         <i
           :class="'fa ' + options.addElemIcon"
           :style="'color:' + options.addElemIconColor"
+          aria-hidden="true">
+        </i>
+      </span>
+      <span
+        v-if="options.editNode.state == true"
+        v-on:click='options.editNode.fn(node)'>
+        <i
+          :class="'fa ' + options.editElemIcon"
+          :style="'color:' + options.editElemIconColor"
+          aria-hidden="true">
+        </i>
+      </span>
+      <span
+        v-if="options.deleteNode.state == true"
+        v-on:click='options.deleteNode.fn(node)'>
+        <i
+          :class="'fa ' + options.deleteElemIcon"
+          :style="'color:' + options.deleteElemIconColor"
           aria-hidden="true">
         </i>
       </span>
@@ -99,6 +117,10 @@
           selectedIconColor: "#2ECC71",
           addElemIcon: 'fa-plus',
           addElemIconColor: '#007AD5',
+          editElemIcon: 'fa-pencil',
+          editElemIconColor: '#007AD5',
+          deleteElemIcon: 'fa-times',
+          deleteElemIconColor: '#007AD5',
           events: {
             expanded: {
               state: true,
@@ -127,7 +149,9 @@
               },
             },
           },
-          addNodes: {state: false, fn: null},
+          addNode: {state: false, fn: null},
+          editNode: { state: false, fn: null },
+          deleteNode: { state: false, fn: null },
           showTags: false,
           colorNameWhenSelected: true,
           titleSelectable: true
@@ -322,9 +346,17 @@
           if (this.customOptions.addElemIconColor) {
             this.options.addElemIconColor = this.customOptions.addElemIconColor;
           }
-          if (this.customOptions.addNodes && this.customOptions.addNodes.state == true) {
-            this.options.addNodes.state = true;
-            this.options.addNodes.fn = this.customOptions.addNodes.fn;
+          if (this.customOptions.addNode && this.customOptions.addNode.state == true) {
+            this.options.addNode.state = true;
+            this.options.addNode.fn = this.customOptions.addNode.fn;
+          }
+          if (this.customOptions.editNode && this.customOptions.editNode.state == true) {
+            this.options.editNode.state = true;
+            this.options.editNode.fn = this.customOptions.editNode.fn;
+          }
+          if (this.customOptions.deleteNode && this.customOptions.deleteNode.state == true) {
+            this.options.deleteNode.state = true;
+            this.options.deleteNode.fn = this.customOptions.deleteNode.fn;
           }
           if (this.customOptions.showTags) {
             this.options.showTags = this.customOptions.showTags;

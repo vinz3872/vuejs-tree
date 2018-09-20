@@ -214,45 +214,53 @@ var customOptions = {
   treeEvents: {
     expanded: {
       state: true,
-      fn: this.updateNodes
+      fn: this.myUpdateNodesFunction,
     },
     collapsed: {
       state: true,
-      fn: this.updateNodes
+      fn: this.myUpdateNodesFunction,
     },
     checked: {
       state: true,
-      fn: this.updateNodeChecked
+      fn: this.myUpdateNodeCheckedFunction,
     }
   },
   events: {
     selected: {
       state: false,
-      fn: null
+      fn: null,
     },
     editableName: {
       state: true,
-      calledEvent: 'expanded'
+      calledEvent: 'expanded',
     }
-  }
+  },
+  addNode: {state: true, fn: myAddNodeFunction},
   showTags: true,
 }
 ```
 
 
-Option name       | detail
-------------------|-------
-showTags          | Boolean - show counter of nodes
-icon              | String - node folder icon
-iconColor         | String - folder's icon color
-selectedIcon      | String - node's icon when selected
-selectedIconColor | String - node icon's color when selected
-addElemIcon       | String - icon to add a node
-addElemIconColor  | String - add node icon's color
-style             | Object - contains tree and row
-tree              | Object - override default tree css
-row               | Object - override default tree node css
-child             | Object - override style of <div> into the <li> row (e.g. you can manage the height of the row)
+Option name          | detail
+---------------------|-------
+showTags             | Boolean - show counter of nodes
+icon                 | String - node folder icon
+iconColor            | String - folder's icon color
+selectedIcon         | String - node's icon when selected
+selectedIconColor    | String - node icon's color when selected
+addElemIcon          | String - icon to add a node
+addElemIconColor     | String - add node icon's color
+editElemIcon         | String - icon to edit a node
+editElemIconColor    | String - edit node icon's color
+deleteElemIcon       | String - icon to delete a node
+deleteElemIconColor  | String - delete node icon's color
+style                | Object - contains tree and row
+tree                 | Object - override default tree css
+row                  | Object - override default tree node css
+child                | Object - override style of <div> into the <li> row (e.g. you can manage the height of the row)
+addNode              | Object - show a button to add a node
+editNode             | Object - show a button to edit a node
+deleteNode           | Object - show a button to delete a node
 
 
 ## Events
