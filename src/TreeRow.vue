@@ -2,14 +2,15 @@
   <li
     class="node"
     :data-id="node.id"
-    :style="options.style.row"
-    v-on:click.stop="toggleEvent('selected', node, 'node', $event)">
-    <div :style="options.style.row.child">
-      <span v-on:click.stop="options.events.expanded.state == true && node.nodes != undefined && node.nodes.length > 0 && toggleEvent('expanded', node)">
+    :style="styles.row">
+    <div class="row_data"
+      :style="styles.row.child"
+      @click="toggleEvent('selected', node, 'node', $event)">
+      <span @click.stop="options.events.expanded.state == true && node.nodes != undefined && node.nodes.length > 0 && toggleEvent('expanded', node)">
         <span v-for="(count, index) in depth" class="tree-indent" v-bind:key="index"></span>
         <i
           v-if="options.events.expanded.state == true && node.nodes != undefined && node.nodes.length > 0"
-          class="fa"
+          class="icon-margin fa"
           v-bind:class="{'fa-caret-right': expanded == false, 'fa-caret-down': expanded == true}"
           aria-hidden="true">
         </i>
@@ -20,11 +21,10 @@
       </span>
       <i
         v-if="options.events.selected.state == true"
-        v-on:click.stop="toggleEvent('selected', node)"
-        class="fa"
-        v-bind:class="{[options.icon]: expanded == false, [options.selectedIcon]: expanded == true}"
+        @click.stop="toggleEvent('selected', node)"
+        :class="expanded ? styles.selectIcon.active.class : styles.selectIcon.class"
         aria-hidden="true"
-        :style="'color:' + (selected == false ? options.iconColor : options.selectedIconColor)">
+        :style="selected ? styles.selectIcon.active.style : styles.selectIcon.style">
       </i>
       <input
         type="checkbox"
@@ -32,7 +32,7 @@
         :data-id="node.id"
         :checked="checked"
         v-if="options.events.checked.state == true"
-        v-on:click.stop="toggleEvent('checked', node)"
+        @click="toggleEvent('checked', node)"
       >
       <span
         data-toggle="tooltip"
@@ -40,38 +40,38 @@
         :title="node.definition"
         class="capitalize"
         v-bind:class="{'selected': selected}"
-        :style="options.colorNameWhenSelected && selected ? ('color:' + options.selectedIconColor + '; font-weight: bold') : ''"
-        v-on:click.stop="options.events.editableName.state && toggleEvent('editableName', node)" >
+        :style="selected ? styles.text.active.style : styles.text.style"
+        @click.stop="options.events.editableName.state && toggleEvent('editableName', node)" >
         {{ node.text }}
       </span>
       <span
         v-if="options.addNode.state == true"
-        v-on:click='options.addNode.fn(node)'>
+        @click.stop='options.addNode.fn(node)'>
         <i
-          :class="'fa ' + options.addElemIcon"
-          :style="'color:' + options.addElemIconColor"
+          v-bind:class="[{'icon-hover': options.addNode.appearOnHover}, styles.addNode.class]"
+          :style="styles.addNode.style"
           aria-hidden="true">
         </i>
       </span>
       <span
         v-if="options.editNode.state == true"
-        v-on:click='options.editNode.fn(node)'>
+        @click.stop='options.editNode.fn(node)'>
         <i
-          :class="'fa ' + options.editElemIcon"
-          :style="'color:' + options.editElemIconColor"
+        v-bind:class="[{'icon-hover': options.editNode.appearOnHover}, styles.editNode.class]"
+        :style="styles.editNode.style"
           aria-hidden="true">
         </i>
       </span>
       <span
         v-if="options.deleteNode.state == true"
-        v-on:click='options.deleteNode.fn(node)'>
+        @click.stop='options.deleteNode.fn(node)'>
         <i
-          :class="'fa ' + options.deleteElemIcon"
-          :style="'color:' + options.deleteElemIconColor"
+        v-bind:class="[{'icon-hover': options.deleteNode.appearOnHover}, styles.deleteNode.class]"
+        :style="styles.deleteNode.style"
           aria-hidden="true">
         </i>
       </span>
-      <span v-if="options.showTags == true">
+      <span v-if="options.showTags == true && node.tags">
         <span
           v-if="node.tags[0] != undefined && node.tags[0]!= null && node.tags[0]"
           class="badge">
@@ -106,32 +106,71 @@
       },
       depth: Number,
       customOptions: Object,
+      customStyles: Object,
       parentNode: Object,
     },
     data: function() {
       return {
+        styles: {
+          row: {
+            width: '500px',
+            cursor: 'pointer',
+            child: {
+              height: '35px',
+            },
+          },
+          addNode: {
+            class: 'fa fa-plus icon-margin',
+            style: {
+              color: '#007AD5',
+            }
+          },
+          editNode: {
+            class: 'fa fa-pen icon-margin',
+            style: {
+              color: '#007AD5',
+            }
+          },
+          deleteNode: {
+            class: 'fa fa-times',
+            style: {
+              color: '#EE5F5B',
+            }
+          },
+          selectIcon: {
+            class: 'fa fa-folder icon-margin',
+            style: {
+              color: '#007AD5',
+            },
+            active: {
+              class: 'fa fa-folder-open icon-margin',
+              style: {
+                color: '#2ECC71',
+              },
+            }
+          },
+          text: {
+            style: {},
+            active: {
+              style: {
+                'font-weight': 'bold',
+                color: '#2ECC71',
+              }
+            }
+          }
+        },
         options: {
-          icon: "fa-folder",
-          iconColor: "#007AD5",
-          selectedIcon: "fa-folder-open",
-          selectedIconColor: "#2ECC71",
-          addElemIcon: 'fa-plus',
-          addElemIconColor: '#007AD5',
-          editElemIcon: 'fa-pencil',
-          editElemIconColor: '#007AD5',
-          deleteElemIcon: 'fa-times',
-          deleteElemIconColor: '#EE5F5B',
           events: {
             expanded: {
               state: true,
               fn: this.toggleExpanded,
             },
             selected: {
-              state: true,
+              state: false,
               fn: this.toggleSelected,
             },
             checked: {
-              state: true,
+              state: false,
               fn: this.toggleChecked,
             },
             editableName: {
@@ -140,21 +179,10 @@
               calledEvent: null,
             }
           },
-          style: {
-            row: {
-              width: '500px',
-              cursor: 'pointer',
-              child: {
-                height: '35px',
-              },
-            },
-          },
-          addNode: {state: false, fn: null},
-          editNode: { state: false, fn: null },
-          deleteNode: { state: false, fn: null },
+          addNode: { state: false, fn: null, appearOnHover: false },
+          editNode: { state: false, fn: null, appearOnHover: false },
+          deleteNode: { state: false, fn: null, appearOnHover: false },
           showTags: false,
-          colorNameWhenSelected: true,
-          titleSelectable: true
         },
         checked: false,
         expanded: false,
@@ -173,7 +201,9 @@
       }
     },
     mounted: function() {
-      this.initEvents();
+      this.copyOptions(this.customOptions, this.options);
+      this.copyStyles(this.customStyles, this.styles);
+
       if (this.node.state) {
         this.checked = this.node.state.checked;
         this.expanded = this.node.state.expanded;
@@ -261,7 +291,7 @@
       callNodeChecked: function(args) {
         const arrIds = args.arrIds;
         const value = args.value;
-        if (arrIds.last() == this.node.id) {
+        if (arrIds[arrIds.length - 1] == this.node.id) {
           this.checked = value;
           this.callNodesChecked(this.checked);
         } else {
@@ -274,7 +304,7 @@
       callNodeSelected: function(args) {
         const arrIds = args.arrIds;
         const value = args.value;
-        if (arrIds.last() == this.node.id) {
+        if (arrIds[arrIds.length - 1] == this.node.id) {
           this.selected = value;
         } else {
           this.expanded = true;
@@ -287,7 +317,7 @@
         const arrIds = args.arrIds;
         const value = args.value;
         if (value == false && this.expanded == false) return;
-        if (arrIds.last() != this.node.id) {
+        if (arrIds[arrIds.length - 1] != this.node.id) {
           this.expanded = true;
           this.$nextTick(function() {
             this.callSpecificChild(arrIds, 'callNodeExpanded', args);
@@ -296,79 +326,22 @@
           this.expanded = value;
         }
       },
-      initEvents: function() {
-        this.node.depth = this.depth;
-        if (this.customOptions) {
-          this.options.events.checked.state = this.node.checkable != undefined ? this.node.checkable : true;
-          this.options.events.selected.state = this.node.selectable != undefined ? this.node.selectable : true;
-          this.options.events.expanded.state = this.node.expandable != undefined ? this.node.expandable : true;
-          if (this.customOptions.events) {
-            const events = this.customOptions.events;
-            if (events.expanded) {
-              if (events.expanded.state != undefined) this.options.events.expanded.state = events.expanded.state;
-              if (events.expanded.fn) this.options.events.expanded.fn = events.expanded.fn;
-            }
-            if (events.selected) {
-              if (events.selected.state != undefined) this.options.events.selected.state = events.selected.state;
-              if (events.selected.fn) this.options.events.selected.fn = events.selected.fn;
-            }
-            if (events.checked) {
-              if (events.checked.state != undefined) this.options.events.checked.state = events.checked.state;
-              if (events.checked.fn) this.options.events.checked.fn = events.checked.fn;
-            }
-            if (events.editableName) {
-              if (events.editableName.state != undefined) this.options.events.editableName.state = events.editableName.state;
-              if (events.editableName.fn) this.options.events.editableName.fn = events.editableName.fn;
-              if (events.editableName.calledEvent) this.options.events.editableName.calledEvent = events.editableName.calledEvent;
-            }
-          }
-          if (this.customOptions.style && this.customOptions.style.row) {
-            this.options.style.row = this.customOptions.style.row;
-          }
-          if (this.customOptions.style && this.customOptions.style.row && this.customOptions.style.row.child) {
-            this.options.style.row.child = this.customOptions.style.row.child;
-          }
-          if (this.customOptions.icon) {
-            this.options.icon = this.customOptions.icon;
-          }
-          if (this.customOptions.iconColor) {
-            this.options.iconColor = this.customOptions.iconColor;
-          }
-          if (this.customOptions.selectedIcon) {
-            this.options.selectedIcon = this.customOptions.selectedIcon;
-          }
-          if (this.customOptions.selectedIconColor) {
-            this.options.selectedIconColor = this.customOptions.selectedIconColor;
-          }
-          if (this.customOptions.addElemIcon) {
-            this.options.addElemIcon = this.customOptions.addElemIcon;
-          }
-          if (this.customOptions.addElemIconColor) {
-            this.options.addElemIconColor = this.customOptions.addElemIconColor;
-          }
-          if (this.customOptions.addNode && this.customOptions.addNode.state == true) {
-            this.options.addNode.state = true;
-            this.options.addNode.fn = this.customOptions.addNode.fn;
-          }
-          if (this.customOptions.editNode && this.customOptions.editNode.state == true) {
-            this.options.editNode.state = true;
-            this.options.editNode.fn = this.customOptions.editNode.fn;
-          }
-          if (this.customOptions.deleteNode && this.customOptions.deleteNode.state == true) {
-            this.options.deleteNode.state = true;
-            this.options.deleteNode.fn = this.customOptions.deleteNode.fn;
-          }
-          if (this.customOptions.showTags) {
-            this.options.showTags = this.customOptions.showTags;
-          }
-          if (this.customOptions.colorNameWhenSelected) {
-            this.options.colorNameWhenSelected = this.customOptions.colorNameWhenSelected;
-          }
-          if (this.customOptions.titleSelectable) {
-            this.options.titleSelectable = this.customOptions.titleSelectable;
+      copyStyles: function(src, dst) {
+        for(var key in src) {
+          dst[key] = src[key];
+        }
+      },
+      copyOptions: function(src, dst) {
+        for(var key in src) {
+          if (!dst[key]) {
+            dst[key] = src[key];
+          } else if (typeof(src[key]) == "object") {
+            this.copyOptions(src[key], dst[key]);
+          } else {
+            dst[key] = src[key];
           }
         }
-      }
+      },
     }
   }
 
@@ -377,17 +350,24 @@
 
 <style lang="scss" scoped>
   .tree-indent {
-    margin-left: 10px;
-    margin-right: 10px;
+    margin: 0 10px;
     display: inline-block;
-    & + .fa {
-      margin: 0 5px 0 0;
-    }
   }
   .small-tree-indent {
-    margin-left: 3px;
-    margin-right: 3px;
+    margin: 0 3px;
     display: inline-block;
+  }
+  .icon-hover {
+    visibility: hidden;
+    opacity: 0;
+    transition: all .2s ease-in-out;
+  }
+  .row_data:hover .icon-hover{
+    visibility: visible;
+    opacity: 1;
+  }
+  .icon-margin {
+    margin: 0 5px 0 0;
   }
   .capitalize {
     text-transform: capitalize;
@@ -395,5 +375,8 @@
   .badge {
     font-size: 12px;
     font-weight: normal;
+  }
+  li {
+    list-style: none;
   }
 </style>

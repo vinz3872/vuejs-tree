@@ -1,7 +1,7 @@
 <template>
   <div id="tree">
     <ul
-      :style="options.style.tree"
+      :style="styles.tree"
       v-if="force">
       <template v-for="node in nodes">
         <tree-row
@@ -12,6 +12,7 @@
           :node="node"
           :depth="1"
           :custom-options="customOptions"
+          :custom-styles="customStyles"
           :parent-node="node">
         </tree-row>
       </template>
@@ -25,7 +26,14 @@
   export default {
     name: 'tree',
     props: {
-      customOptions: Object,
+      customOptions: {
+        default: () => {return {}},
+        type: Object,
+      },
+      customStyles: {
+        default: () => {return {}},
+        type: Object,
+      },
       id: String,
       nodes: {
         type: Array,
@@ -34,45 +42,46 @@
     },
     data: function() {
       return {
-        options: {
-          style: {
-            tree: {
-              height: "auto",
-              maxHeight: "500px",
-              overflowY: "scroll",
-              border: "1px solid #ddd",
-              display: "inline-block"
-            },
+        styles: {
+          tree: {
+            height: "auto",
+            maxHeight: "500px",
+            overflowY: "scroll",
+            border: "1px solid #ddd",
+            display: "inline-block",
           },
+        },
+        options: {
           treeEvents: {
             expanded: {
               state: false,
-              fn: null
+              fn: null,
             },
             collapsed: {
               state: false,
-              fn: null
+              fn: null,
             },
             selected: {
               state: false,
-              fn: null
+              fn: null,
             },
             checked: {
               state: false,
-              fn: null
+              fn: null,
             }
           }
         },
         selectedNode: null,
         expandedNodes: {},
-        force: true
+        force: true,
       }
     },
     components: {
-      'tree-row': TreeRow
+      'tree-row': TreeRow,
     },
     mounted: function() {
-      this.initTree();
+      this.copyOptions(this.customOptions, this.options);
+      this.copyStyles(this.customStyles, this.styles);
     },
     methods: {
       forceRender: function(nodes) {
@@ -82,29 +91,19 @@
           _this.nodes = nodes;
         });
       },
-      initTree: function() {
-        if (this.customOptions) {
-          if (this.customOptions.style && this.customOptions.style.tree) {
-            this.options.style.tree = this.customOptions.style.tree;
-          }
-          if (this.customOptions.treeEvents) {
-            const events = this.customOptions.treeEvents;
-            if (events.expanded) {
-              if (events.expanded.state != undefined) this.options.treeEvents.expanded.state = events.expanded.state;
-                if (events.expanded.fn) this.options.treeEvents.expanded.fn = events.expanded.fn;
-              }
-            if (events.collapsed) {
-              if (events.collapsed.state != undefined) this.options.treeEvents.collapsed.state = events.collapsed.state;
-                if (events.collapsed.fn) this.options.treeEvents.collapsed.fn = events.collapsed.fn;
-              }
-            if (events.selected) {
-              if (events.selected.state != undefined) this.options.treeEvents.selected.state = events.selected.state;
-                if (events.selected.fn) this.options.treeEvents.selected.fn = events.selected.fn;
-              }
-            if (events.checked) {
-              if (events.checked.state != undefined) this.options.treeEvents.checked.state = events.checked.state;
-                if (events.checked.fn) this.options.treeEvents.checked.fn = events.checked.fn;
-              }
+      copyStyles: function(src, dst) {
+        for(var key in src) {
+          dst[key] = src[key];
+        }
+      },
+      copyOptions: function(src, dst) {
+        for(var key in src) {
+          if (!dst[key]) {
+            dst[key] = src[key];
+          } else if (typeof(src[key]) == "object") {
+            this.copyOptions(src[key], dst[key]);
+          } else {
+            dst[key] = src[key];
           }
         }
       },
@@ -152,6 +151,7 @@
       },
       onNodeSelected: function(nodeSelected) { // called when a TreeRow is selected
         const _this = this;
+
         if (this.selectedNode == null && nodeSelected.state.selected == true) {
           this.selectedNode = nodeSelected;
         } else if (this.selectedNode != null && nodeSelected.state.selected == false) {
