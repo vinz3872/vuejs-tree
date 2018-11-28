@@ -50,7 +50,7 @@ Add the following lines at the top of your .js file which contains your Vue inst
 
 Then add the following line in your html file to generate a tree. You can have as many trees per page as you want.
 ```html
-  <tree id="my-tree-id" :custom-options="myCustomOptions" :nodes="treeDisplayData"></tree>
+  <Tree id="my-tree-id" :custom-options="myCustomOptions" :custom-styles="myCustomStyles" :nodes="treeDisplayData"></Tree>
 ```
 
 
@@ -63,26 +63,26 @@ Example:
 ```javascript
 var nodes = [
   {
-    text: "Root 1",
+    text: 'Root 1',
     nodes: [
       {
-        text: "Child 1",
+        text: 'Child 1',
         nodes: [
           {
-            text: "Grandchild 1"
+            text: 'Grandchild 1'
           },
           {
-            text: "Grandchild 2"
+            text: 'Grandchild 2'
           }
         ]
       },
       {
-        text: "Child 2"
+        text: 'Child 2'
       }
     ]
   },
   {
-    text: "Root 2"
+    text: 'Root 2'
   }
 ];
 ```
@@ -94,8 +94,8 @@ Here is a fully customized node:
 ```javascript
 {
   id: 1,
-  text: "Root 1",
-  definition: "First node",
+  text: 'Root 1',
+  definition: 'First node',
   depth: 1,
   checkable: false,
   selectable: false,
@@ -186,58 +186,115 @@ Another way to enable or disable the expand event.
 Used to display node's children.
 *Look above for a structure example*
 
-## Options
+## Options / Styles
 
 Here is an example of a customOptions hash the tree take.
 I suggest you to use a vuejs computed function if you want to use function pointer.
-For the icons, it's only compatible with `Font Awesome`.
 
 ```javascript
-var customOptions = {
-  icon: 'fa-folder',
-  iconColor: '#007AD5',
-  selectedIcon: 'fa-folder-open',
-  selectedIconColor: '#2ECC71',
-  addElemIcon: 'fa-plus',
-  addElemIconColor: '#007AD5',
-  style: {
-    tree: {
-      border: 'none',
-    },
-    row: {
-      cursor: 'pointer',
-      child: {
-        height: '35px'
+computed: {
+  myCustomStyles() {
+    return {
+      tree: {
+        height: 'auto',
+        maxHeight: '300px',
+        overflowY: 'visible',
+        display: 'inline-block'
       },
-    },
+      row: {
+        width: '500px',
+        cursor: 'pointer',
+        child: {
+          height: '35px'
+        }
+      },
+      addNode: {
+        class: 'custom_class',
+        style: {
+          color: '#007AD5'
+        }
+      },
+      editNode: {
+        class: 'custom_class',
+        style: {
+          color: '#007AD5'
+        }
+      },
+      deleteNode: {
+        class: 'custom_class',
+        style: {
+          color: '#EE5F5B'
+        }
+      },
+      selectIcon: {
+        class: 'custom_class',
+        style: {
+          color: '#007AD5'
+        },
+        active: {
+          class: 'custom_class',
+          style: {
+            color: '#2ECC71'
+          }
+        }
+      },
+      text: {
+        style: {},
+        active: {
+          style: {
+            'font-weight': 'bold',
+            color: '#2ECC71'
+          }
+        }
+      }
+    };
   },
-  treeEvents: {
-    expanded: {
-      state: true,
-      fn: this.myUpdateNodesFunction,
-    },
-    collapsed: {
-      state: true,
-      fn: this.myUpdateNodesFunction,
-    },
-    checked: {
-      state: true,
-      fn: this.myUpdateNodeCheckedFunction,
-    }
-  },
-  events: {
-    selected: {
-      state: false,
-      fn: null,
-    },
-    editableName: {
-      state: true,
-      calledEvent: 'expanded',
-    }
-  },
-  addNode: {state: true, fn: myAddNodeFunction},
-  showTags: true,
-}
+  myCustomOptions() {
+    return {
+      treeEvents: {
+        expanded: {
+          state: true,
+          fn: null,
+        },
+        collapsed: {
+          state: false,
+          fn: null,
+        },
+        selected: {
+          state: false,
+          fn: null,
+        },
+        checked: {
+          state: true,
+          fn: this.myCheckedFunction,
+        }
+      },
+      events: {
+        expanded: {
+          state: true,
+          fn: null,
+        },
+        selected: {
+          state: false,
+          fn: null,
+        },
+        checked: {
+          state: false,
+          fn: null,
+        },
+        editableName: {
+          state: false,
+          fn: null,
+          calledEvent: null,
+        }
+      },
+      addNode: { state: false, fn: null, appearOnHover: false },
+      editNode: { state: true, fn: null, appearOnHover: true },
+      deleteNode: { state: true, fn: null, appearOnHover: true },
+      showTags: true,
+    };
+  }
+},
 ```
 
 

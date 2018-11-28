@@ -10,9 +10,7 @@
         <span v-for="(count, index) in depth" class="tree-indent" v-bind:key="index"></span>
         <i
           v-if="options.events.expanded.state == true && node.nodes != undefined && node.nodes.length > 0"
-          class="icon-margin fa"
-          v-bind:class="{'fa-caret-right': expanded == false, 'fa-caret-down': expanded == true}"
-          aria-hidden="true">
+          :class="[{'expanded': expanded == true}, styles.expanded.class, 'expanded_icon']">
         </i>
         <span
           v-else-if="options.events.expanded.state == true && node.nodes == undefined"
@@ -23,7 +21,6 @@
         v-if="options.events.selected.state == true"
         @click.stop="toggleEvent('selected', node)"
         :class="expanded ? styles.selectIcon.active.class : styles.selectIcon.class"
-        aria-hidden="true"
         :style="selected ? styles.selectIcon.active.style : styles.selectIcon.style">
       </i>
       <input
@@ -46,29 +43,29 @@
       </span>
       <span
         v-if="options.addNode.state == true"
-        @click.stop='options.addNode.fn(node)'>
+        @click.stop="options.addNode.fn(node)"
+        class="icon_parent">
         <i
           v-bind:class="[{'icon-hover': options.addNode.appearOnHover}, styles.addNode.class]"
-          :style="styles.addNode.style"
-          aria-hidden="true">
+          :style="styles.addNode.style">
         </i>
       </span>
       <span
         v-if="options.editNode.state == true"
-        @click.stop='options.editNode.fn(node)'>
+        @click.stop="options.editNode.fn(node)"
+        class="icon_parent">
         <i
         v-bind:class="[{'icon-hover': options.editNode.appearOnHover}, styles.editNode.class]"
-        :style="styles.editNode.style"
-          aria-hidden="true">
+        :style="styles.editNode.style">
         </i>
       </span>
       <span
         v-if="options.deleteNode.state == true"
-        @click.stop='options.deleteNode.fn(node)'>
+        @click.stop="options.deleteNode.fn(node)"
+        class="icon_parent">
         <i
         v-bind:class="[{'icon-hover': options.deleteNode.appearOnHover}, styles.deleteNode.class]"
-        :style="styles.deleteNode.style"
-          aria-hidden="true">
+        :style="styles.deleteNode.style">
         </i>
       </span>
       <span v-if="options.showTags == true && node.tags">
@@ -82,14 +79,15 @@
     <ul v-if="expanded">
       <template v-for="child in node.nodes">
         <tree-row
+          :custom-options="customOptions"
+          :custom-styles="customStyles"
+          :depth="depth + 1"
           :key="child.id"
           :node="child"
-          :depth="depth + 1"
-          :custom-options="customOptions"
           :parent-node="node"
-          v-on:emitNodeSelected="emitNodeSelected"
+          v-on:emitNodeChecked="emitNodeChecked"
           v-on:emitNodeExpanded="emitNodeExpanded"
-          v-on:emitNodeChecked="emitNodeChecked">
+          v-on:emitNodeSelected="emitNodeSelected">
         </tree-row>
       </template>
     </ul>
@@ -119,31 +117,34 @@
               height: '35px',
             },
           },
+          expanded: {
+            class: 'expanded_icon',
+          },
           addNode: {
-            class: 'fa fa-plus icon-margin',
+            class: 'add_icon',
             style: {
               color: '#007AD5',
             }
           },
           editNode: {
-            class: 'fa fa-pen icon-margin',
+            class: 'edit_icon',
             style: {
               color: '#007AD5',
             }
           },
           deleteNode: {
-            class: 'fa fa-times',
+            class: 'delete_icon',
             style: {
               color: '#EE5F5B',
             }
           },
           selectIcon: {
-            class: 'fa fa-folder icon-margin',
+            class: 'folder_icon',
             style: {
               color: '#007AD5',
             },
             active: {
-              class: 'fa fa-folder-open icon-margin',
+              class: 'folder_icon_active',
               style: {
                 color: '#2ECC71',
               },
@@ -202,8 +203,7 @@
     },
     mounted: function() {
       this.copyOptions(this.customOptions, this.options);
-      this.copyStyles(this.customStyles, this.styles);
-
+      this.copyOptions(this.customStyles, this.styles);
       if (this.node.state) {
         this.checked = this.node.state.checked;
         this.expanded = this.node.state.expanded;
@@ -326,11 +326,6 @@
           this.expanded = value;
         }
       },
-      copyStyles: function(src, dst) {
-        for(var key in src) {
-          dst[key] = src[key];
-        }
-      },
       copyOptions: function(src, dst) {
         for(var key in src) {
           if (!dst[key]) {
@@ -366,9 +361,6 @@
     visibility: visible;
     opacity: 1;
   }
-  .icon-margin {
-    margin: 0 5px 0 0;
-  }
   .capitalize {
     text-transform: capitalize;
   }
@@ -378,5 +370,47 @@
   }
   li {
     list-style: none;
+  }
+  .icon_margin {
+    margin: 0 5px 0 0;
+  }
+  .icon_parent {
+    background: transparent;
+    width: 20px;
+    height: 20px;
+    display: inline-block;
+    vertical-align: middle;
+    text-align: center;
+    margin: 0 2px 0 0;
+    i {
+      font-size: 16px;
+      line-height: 10px;
+    }
+    &:last-child {
+      margin: 0;
+    }
+  }
+  .expanded_icon {
+    font-size: 16px;
+    transform: translateY(-5%) rotate(0deg);
+    transition: all ease .2s;
+    &.expanded {
+      transform: translateY(-5%) rotate(90deg);
+    }
+  }
+  .add_icon:before {
+    content: '\002b';
+  }
+  .edit_icon:before {
+    content: '\00270e';
+  }
+  .delete_icon:before {
+    content: '\00d7';
+  }
+  .folder_icon:before {
+    content: '\1F4C1';
+  }
+  .folder_icon_active:before {
+    content: '\1F4C2';
   }
 </style>

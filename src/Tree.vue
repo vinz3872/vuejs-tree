@@ -5,15 +5,15 @@
       v-if="force">
       <template v-for="node in nodes">
         <tree-row
-          v-on:emitNodeSelected="onNodeSelected"
-          v-on:emitNodeExpanded="onNodeExpanded"
-          v-on:emitNodeChecked="onNodeChecked"
-          :key="node.id"
-          :node="node"
-          :depth="1"
           :custom-options="customOptions"
           :custom-styles="customStyles"
-          :parent-node="node">
+          :depth="1"
+          :key="node.id"
+          :node="node"
+          :parent-node="node"
+          v-on:emitNodeChecked="onNodeChecked"
+          v-on:emitNodeExpanded="onNodeExpanded"
+          v-on:emitNodeSelected="onNodeSelected">
         </tree-row>
       </template>
     </ul>
@@ -47,7 +47,6 @@
             height: "auto",
             maxHeight: "500px",
             overflowY: "scroll",
-            border: "1px solid #ddd",
             display: "inline-block",
           },
         },
@@ -81,7 +80,7 @@
     },
     mounted: function() {
       this.copyOptions(this.customOptions, this.options);
-      this.copyStyles(this.customStyles, this.styles);
+      this.copyOptions(this.customStyles, this.styles);
     },
     methods: {
       forceRender: function(nodes) {
@@ -90,11 +89,6 @@
         this.$nextTick(function() {
           _this.nodes = nodes;
         });
-      },
-      copyStyles: function(src, dst) {
-        for(var key in src) {
-          dst[key] = src[key];
-        }
       },
       copyOptions: function(src, dst) {
         for(var key in src) {
