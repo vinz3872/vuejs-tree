@@ -61,30 +61,32 @@ You need to define data to display which is a nested array of hash.
 Example:
 
 ```javascript
-var treeDisplayData = [
-  {
-    text: 'Root 1',
-    nodes: [
-      {
-        text: 'Child 1',
-        nodes: [
-          {
-            text: 'Grandchild 1'
-          },
-          {
-            text: 'Grandchild 2'
-          }
-        ]
-      },
-      {
-        text: 'Child 2'
-      }
-    ]
-  },
-  {
-    text: 'Root 2'
-  }
-];
+data: {
+  treeDisplayData: [
+    {
+      text: 'Root 1',
+      nodes: [
+        {
+          text: 'Child 1',
+          nodes: [
+            {
+              text: 'Grandchild 1'
+            },
+            {
+              text: 'Grandchild 2'
+            }
+          ]
+        },
+        {
+          text: 'Child 2'
+        }
+      ]
+    },
+    {
+      text: 'Root 2'
+    }
+  ];
+}
 ```
 
 ### Node properties
@@ -116,75 +118,22 @@ Here is a fully customized node:
 
 The Following properties define a node level css and behavior.
 
-#### id
-`String` or `Integer` --> `Mandatory`
-
-Used in the tree to differentiate each nodes.
-
-#### text
-`String` --> `Mandatory`
-
-The text value displayed at the right of the node icons.
-
-#### definition
-`String` --> `Optional`
-
-If some text is given, then it will show as a tooltip.
-
-#### depth
-`Integer` --> `Optional`
-
-It correspond to the node depth, starting from 0, 1 or anything.
-It's advisable to fill theses fields if somes of your nodes have the same id.
-
-#### disabled
-`Boolean` --> `Optional`, `default`: false
-
-Used to specifie if the node is disabled or not.
-
-#### tags
-`[Integer]` --> `Optional`
-
-The tag is displayed at the right end of the line.
-
-#### checkable
-`Boolean` --> `Optional`, `default`: true
-
-Used to enable or disable the node's check event.
-
-#### selectable
-`Boolean` --> `Optional`, `default`: true
-
-Used to enable or disable the node's select event.
-
-#### expandable
-`Boolean` --> `Optional`, `default`: true
-
-Used to enable or disable the node's expand event.
-
-#### state
-
-##### checkable
-`Boolean` --> `Optional`, `default`: true
-
-Another way to enable or disable the check event.
-
-##### selectable
-`Boolean` --> `Optional`, `default`: true
-
-Another way to enable or disable the select event.
-
-##### expandable
-`Boolean` --> `Optional`, `default`: true
-
-Another way to enable or disable the expand event.
-
-
-#### nodes
-`Object` --> `Optional`
-
-Used to display node's children.
-*Look above for a structure example*
+| key              | type                                       | Detail                                                                                                                                        |
+|------------------|--------------------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------|
+| id               | `String` or `Integer` --> `Mandatory`      | Used in the tree to differentiate each nodes                                                                                                  |
+| text             | `String` --> `Mandatory`                   | The text value displayed at the right of the node icons                                                                                       |
+| definition       | `String` --> `Optional`                    | If some text is given, then it will show as a tooltip                                                                                         |
+| depth            | `Integer` --> `Optional`                   | It correspond to the node depth, starting from 0, 1 or anything. It's advisable to fill theses fields if somes of your nodes have the same id |
+| disabled         | `Boolean` --> `Optional`, `default`: false | Used to specifie if the node is disabled or not                                                                                               |
+| tags             | `[Integer]` --> `Optional`                 | The tag is displayed at the right end of the line                                                                                             |
+| checkable        | `Boolean` --> `Optional`, `default`: true  | Used to enable or disable the node's check event                                                                                              |
+| selectable       | `Boolean` --> `Optional`, `default`: true  | Used to enable or disable the node's select event                                                                                             |
+| expandable       | `Boolean` --> `Optional`, `default`: true  | Used to enable or disable the node's expand event                                                                                             |
+| state            |                                            | nodes's state                                                                                                                                 |
+| state.checkable  | `Boolean` --> `Optional`, `default`: true  | Another way to enable or disable the check event                                                                                              |
+| state.selectable | `Boolean` --> `Optional`, `default`: true  | Another way to enable or disable the select event                                                                                             |
+| state.expandable | `Boolean` --> `Optional`, `default`: true  | Another way to enable or disable the expand event                                                                                             |
+| nodes            | `Object` --> `Optional`                    | Used to display node's children. *Look above for a structure example*                                                                         |
 
 ## Options / Styles
 
@@ -390,53 +339,24 @@ Methods Params:
 
 `conditions` --> It' used to affect only the nodes who match it. For example if the condition is {checked: true}, the function will affect only the nodes who are checked. You can use all nodes attribute that are present in the node object.
 
-#### checkNode(nodeId, depth)
-Check a node.
-
-#### uncheckNode(nodeId, depth)
-Uncheck a node.
-
-#### getSelectedNode()
-Return the selected node if you have selected a node.
-
-#### getCheckedNodes(argWanted, format = false)
-Return all checked nodes.
-
-#### getExpandedNodes(argWanted, format = false)
-Return all expanded nodes.
-
-#### checkAllNodes()
-Check all nodes.
-
-#### uncheckAllNodes()
-Uncheck all nodes.
-
-#### expandNode(nodeId, depth)
-Expand a node.
-
-#### collapseNode(nodeId, depth)
-Collapse a node.
-
-#### selectNode(nodeId, depth)
-Select a node and deselect the previously selected node if exist.
-
-#### expandAllNodes()
-Expand all nodes.
-
-#### collapseAllNodes()
-Collapse all nodes.
-
-#### deselectAllNodes()
-Deselect all nodes.
-
-#### findNode(nodeId, maxDepth = 9999)
-Find and return a node.
-
-#### getVisibleNodes(fullNode = false)
-Get all visible nodes.
-
-#### getNodesData(argWanted, conditions = {}, format = false)
-Customizable function that return nodes.
+| Function                                                 | Detail                                                           |
+|----------------------------------------------------------|------------------------------------------------------------------|
+| checkNode(nodeId, depth)                                 | Check a node                                                     |
+| uncheckNode(nodeId, depth)                               | Uncheck a node                                                   |
+| getSelectedNode()                                        | Return the selected node if you have selected a node             |
+| getCheckedNodes(argWanted, format = false)               | Return all checked nodes                                         |
+| getExpandedNodes(argWanted, format = false)              | Return all expanded nodes                                        |
+| checkAllNodes()                                          | Check all nodes                                                  |
+| uncheckAllNodes()                                        | Uncheck all nodes                                                |
+| expandNode(nodeId, depth)                                | Expand a node                                                    |
+| collapseNode(nodeId, depth)                              | Collapse a node                                                  |
+| selectNode(nodeId, depth)                                | Select a node and deselect the previously selected node if exist |
+| expandAllNodes()                                         | Expand all nodes                                                 |
+| collapseAllNodes()                                       | Collapse all nodes                                               |
+| deselectAllNodes()                                       | Deselect all nodes                                               |
+| findNode(nodeId, maxDepth = 9999)                        | Find and return a node                                           |
+| getVisibleNodes(fullNode = false)                        | Get all visible nodes                                            |
+| getNodesData(argWanted, conditions = {}, format = false) | Customizable function that return nodes                          |
 
 ### Get the tree instance
 
