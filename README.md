@@ -61,7 +61,7 @@ You need to define data to display which is a nested array of hash.
 Example:
 
 ```javascript
-var nodes = [
+var treeDisplayData = [
   {
     text: 'Root 1',
     nodes: [
@@ -150,17 +150,17 @@ The tag is displayed at the right end of the line.
 #### checkable
 `Boolean` --> `Optional`, `default`: true
 
-Used to enable or disable the check event.
+Used to enable or disable the node's check event.
 
 #### selectable
 `Boolean` --> `Optional`, `default`: true
 
-Used to enable or disable the select event.
+Used to enable or disable the node's select event.
 
 #### expandable
 `Boolean` --> `Optional`, `default`: true
 
-Used to enable or disable the expand event.
+Used to enable or disable the node's expand event.
 
 #### state
 
@@ -297,28 +297,42 @@ computed: {
 },
 ```
 
+#### Styles
+| Option name | Detail                                                                                             |
+|-------------|----------------------------------------------------------------------------------------------------|
+| icon        | String - node folder icon                                                                          |
+| tree        | Object - override default tree css                                                                 |
+| row         | Object - override default tree node css                                                            |
+| row.child   | Object - override style of `<div>` into the `<li>` row (e.g. you can manage the height of the row) |
+| expanded    | Object - contains the class of the expanded icon                                                   |
+| addNode     | Object - contains the class and the style of the addNode button                                    |
+| editNode    | Object - contains the class and the style of the editNode button                                   |
+| deleteNode  | Object - contains the class and the style of the deleteNode button                                 |
+| selectIcon  | Object - contains the class and the style for the select node icon                                 |
+| text        | Object - contains the class and the style for the node's text                                      |
 
-Option name          | detail
----------------------|-------
-showTags             | Boolean - show counter of nodes
-icon                 | String - node folder icon
-iconColor            | String - folder's icon color
-selectedIcon         | String - node's icon when selected
-selectedIconColor    | String - node icon's color when selected
-addElemIcon          | String - icon to add a node
-addElemIconColor     | String - add node icon's color
-editElemIcon         | String - icon to edit a node
-editElemIconColor    | String - edit node icon's color
-deleteElemIcon       | String - icon to delete a node
-deleteElemIconColor  | String - delete node icon's color
-style                | Object - contains tree and row
-tree                 | Object - override default tree css
-row                  | Object - override default tree node css
-child                | Object - override style of `<div>` into the `<li>` row (e.g. you can manage the height of the row)
-addNode              | Object - show a button to add a node
-editNode             | Object - show a button to edit a node
-deleteNode           | Object - show a button to delete a node
+#### Options
+##### Tree options
+| Option name          | Detail                                                                                                                   |
+|----------------------|--------------------------------------------------------------------------------------------------------------------------|
+| treeEvents           | Object - contains the callback tree events, called **after** the tree row events                                         |
+| treeEvents.expanded  | Object - enable or disable the callback when a node is expanded. If enabled, **fn** (function pointer) must be present.  |
+| treeEvents.collapsed | Object - enable or disable the callback when a node is collasped. If enabled, **fn** (function pointer) must be present. |
+| treeEvents.selected  | Object - enable or disable the callback when a node is selected. If enabled, **fn** (function pointer) must be present.  |
+| treeEvents.checked   | Object - enable or disable the callback when a node is checked. If enabled, **fn** (function pointer) must be present.   |
 
+##### Row Options
+| Option name         | Detail                                                                                                                                                                                                                    |
+|---------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| showTags            | Boolean - Show the node's tag if given                                                                                                                                                                                    |
+| addNode             | Object - enable or disable the add node button. If enabled, **fn** must be present. If *appearOnHover* is true, the button will appear only if the row is hovered                                                         |
+| editNode            | Object - enable or disable the edit node button. If enabled, **fn** must be present. If *appearOnHover* is true, the button will appear only if the row is hovered                                                        |
+| deleteNode          | Object - enable or disable the delete node button. If enabled, **fn** must be present. If *appearOnHover* is true, the button will appear only if the row is hovered                                                      |
+| events              | Object - contains the node events, **override** the tree row events behavior                                                                                                                                              |
+| events.expanded     | Object - enable or disable the expanded node event. The **fn** key is optional, if present, it will **replace** the native behavior                                                                                       |
+| events.selected     | Object - enable or disable the selected node event. The **fn** key is optional, if present, it will **replace** the native behavior                                                                                       |
+| events.checked      | Object - enable or disable the checked node event. The **fn** key is  optional, if present, it will **replace** the native behavior                                                                                       |
+| events.editableName | Object - enable or disable the event when the node's name is clicked. If enabled, the key **fn** or **calledEvent** must be present. **calledEvent** is a string and it value must be an existing event (e.g. 'selected') |
 
 ## Events
 
@@ -328,41 +342,37 @@ These functions are called after all tree modification.
 
 #### onNodeSelected
 Called when a node is selected.
-`treeOptions.treeEvents.selected.fn`
+`myCustomOptions.treeEvents.selected.fn`
 
-#### onNodeExpanded && onNodeCollapsed
+#### onNodeExpanded
 Called when a node is expanded.
-`treeOptions.treeEvents.expanded.fn`
+`myCustomOptions.treeEvents.expanded.fn`
 
-Called when a node is collapsed.
-`treeOptions.treeEvents.collapsed.fn`
+Or called when a node is collapsed.
+`myCustomOptions.treeEvents.collapsed.fn`
 
 #### onNodeChecked
 Called when a node is collapsed.
-`treeOptions.treeEvents.checked.fn`
+`myCustomOptions.treeEvents.checked.fn`
 
 ### Tree row
 You can call your own function here by assigning a function pointer in the tree options. It will replace the existing behavior of the tree for this event.
 You can also disabled an event by changing it's state to false.
 
 #### toggleSelected
-Called when a node is selected.
-`treeOptions.events.selected.fn`
+Called when a node is selected. `myCustomOptions.events.selected.fn`
 
 #### toggleExpanded
-Called when a node is expanded or collapsed.
-`treeOptions.events.expanded.fn`
+Called when a node is expanded or collapsed. `myCustomOptions.events.expanded.fn`
 
 #### toggleChecked
-Called when a node is checked.
-`treeOptions.events.checked.fn`
+Called when a node is checked. `myCustomOptions.events.checked.fn`
 
 #### editableName
-You can call a special function who can be used to edit a node, usually with Ajax request, if you assign it's pointer
-`treeOptions.events.editableName.fn`
-Or you can call an existing event by assigining it's name in
-`treeOptions.events.editableName.calledEvent`
-example : `treeOptions.events.editableName.calledEvent = 'selected'`
+You can call a special function if you assign it's pointer in `myCustomOptions.events.editableName.fn`
+Or you can call an existing event by assigining it's name in `myCustomOptions.events.editableName.calledEvent`
+
+example : `myCustomOptions.events.editableName.calledEvent = 'selected'`
 
 ## Methods
 
