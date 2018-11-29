@@ -120,20 +120,20 @@ The Following properties define a node level css and behavior.
 
 | key              | type                                       | Detail                                                                                                                                        |
 |------------------|--------------------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------|
-| id               | `String` or `Integer` --> `Mandatory`      | Used in the tree to differentiate each nodes                                                                                                  |
-| text             | `String` --> `Mandatory`                   | The text value displayed at the right of the node icons                                                                                       |
-| definition       | `String` --> `Optional`                    | If some text is given, then it will show as a tooltip                                                                                         |
-| depth            | `Integer` --> `Optional`                   | It correspond to the node depth, starting from 0, 1 or anything. It's advisable to fill theses fields if somes of your nodes have the same id |
-| disabled         | `Boolean` --> `Optional`, `default`: false | Used to specifie if the node is disabled or not                                                                                               |
-| tags             | `[Integer]` --> `Optional`                 | The tag is displayed at the right end of the line                                                                                             |
-| checkable        | `Boolean` --> `Optional`, `default`: true  | Used to enable or disable the node's check event                                                                                              |
-| selectable       | `Boolean` --> `Optional`, `default`: true  | Used to enable or disable the node's select event                                                                                             |
-| expandable       | `Boolean` --> `Optional`, `default`: true  | Used to enable or disable the node's expand event                                                                                             |
+| id               | String or Integer --> Mandatory      | Used in the tree to differentiate each nodes                                                                                                  |
+| text             | String --> Mandatory                   | The text value displayed at the right of the node icons                                                                                       |
+| definition       | String --> Optional                    | If some text is given, then it will show as a tooltip                                                                                         |
+| depth            | Integer --> Optional                   | It correspond to the node depth, starting from 0, 1 or anything. It's advisable to fill theses fields if somes of your nodes have the same id |
+| disabled         | Boolean --> Optional, default: false | Used to specifie if the node is disabled or not                                                                                               |
+| tags             | [Integer] --> Optional                 | The tag is displayed at the right end of the line                                                                                             |
+| checkable        | Boolean --> Optional, default: true  | Used to enable or disable the node's check event                                                                                              |
+| selectable       | Boolean --> Optional, default: true  | Used to enable or disable the node's select event                                                                                             |
+| expandable       | Boolean --> Optional, default: true  | Used to enable or disable the node's expand event                                                                                             |
 | state            |                                            | nodes's state                                                                                                                                 |
-| state.checkable  | `Boolean` --> `Optional`, `default`: true  | Another way to enable or disable the check event                                                                                              |
-| state.selectable | `Boolean` --> `Optional`, `default`: true  | Another way to enable or disable the select event                                                                                             |
-| state.expandable | `Boolean` --> `Optional`, `default`: true  | Another way to enable or disable the expand event                                                                                             |
-| nodes            | `Object` --> `Optional`                    | Used to display node's children. *Look above for a structure example*                                                                         |
+| state.checkable  | Boolean --> Optional, default: true  | Another way to enable or disable the check event                                                                                              |
+| state.selectable | Boolean --> Optional, default: true  | Another way to enable or disable the select event                                                                                             |
+| state.expandable | Boolean --> Optional, default: true  | Another way to enable or disable the expand event                                                                                             |
+| nodes            | Object --> Optional                    | Used to display node's children. *Look above for a structure example*                                                                         |
 
 ## Options / Styles
 
