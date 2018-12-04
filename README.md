@@ -120,11 +120,11 @@ The Following properties define a node level css and behavior.
 
 | key              | type                                       | Detail                                                                                                                                        |
 |------------------|--------------------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------|
-| id               | String or Integer --> Mandatory      | Used in the tree to differentiate each nodes                                                                                                  |
+| id               | String or Integer --> Mandatory      | Used in the tree to differentiate each node                                                                                                   |
 | text             | String --> Mandatory                   | The text value displayed at the right of the node icons                                                                                       |
 | definition       | String --> Optional                    | If some text is given, then it will show as a tooltip                                                                                         |
-| depth            | Integer --> Optional                   | It correspond to the node depth, starting from 0, 1 or anything. It's advisable to fill theses fields if somes of your nodes have the same id |
-| disabled         | Boolean --> Optional, default: false | Used to specifie if the node is disabled or not                                                                                               |
+| depth            | Integer --> Optional                   | It corresponds to the node depth, starting from 0, 1 or anything. It's advisable to fill these fields if some of your nodes have the same id |
+| disabled         | Boolean --> Optional, default: false | Used to specify if the node is disabled or not                                                                                               |
 | tags             | [Integer] --> Optional                 | The tag is displayed at the right end of the line                                                                                             |
 | checkable        | Boolean --> Optional, default: true  | Used to enable or disable the node's check event                                                                                              |
 | selectable       | Boolean --> Optional, default: true  | Used to enable or disable the node's select event                                                                                             |
@@ -133,12 +133,12 @@ The Following properties define a node level css and behavior.
 | state.checkable  | Boolean --> Optional, default: true  | Another way to enable or disable the check event                                                                                              |
 | state.selectable | Boolean --> Optional, default: true  | Another way to enable or disable the select event                                                                                             |
 | state.expandable | Boolean --> Optional, default: true  | Another way to enable or disable the expand event                                                                                             |
-| nodes            | Object --> Optional                    | Used to display node's children. *Look above for a structure example*                                                                         |
+| nodes            | Object --> Optional                    | Used to display the node's children. *Look above for a structure example*                                                                         |
 
 ## Options / Styles
 
-Here is an example of a customOptions hash the tree take.
-I suggest you to use a vuejs computed function if you want to use function pointer.
+Here is an example of a customOptions hash the tree can take.
+I suggest you to use a vuejs computed function if you want to use a function pointer.
 
 ```javascript
 computed: {
@@ -286,8 +286,8 @@ computed: {
 ## Events
 
 ### Tree
-You can call your own function here by assigning a function pointer in the tree options and changing it's state to true.
-These functions are called after all tree modification.
+You can call your own function here by assigning a function pointer in the tree options and changing its state to true.
+These functions are called after all tree modifications.
 
 #### onNodeSelected
 Called when a node is selected.
@@ -327,7 +327,7 @@ example : `myCustomOptions.events.editableName.calledEvent = 'selected'`
 
 Methods Params:
 
-`depth` --> Optionnal but help distinguish nodes with the same id.
+`depth` --> Optional but help distinguish nodes with the same id.
 
 `argWanted` --> It can either be a node attribute name (string) or a array of node attribute name (like ['id', 'name']).
 
@@ -337,26 +337,26 @@ Methods Params:
 
 `fullNode` --> Return only node ids or node objects.
 
-`conditions` --> It' used to affect only the nodes who match it. For example if the condition is {checked: true}, the function will affect only the nodes who are checked. You can use all nodes attribute that are present in the node object.
+`conditions` --> It's used to affect only the nodes which match it. For example if the condition is {checked: true}, the function will affect only the nodes which are checked. You can use all nodes attribute that are present in the node object.
 
-| Function                                                 | Detail                                                           |
-|----------------------------------------------------------|------------------------------------------------------------------|
-| checkNode(nodeId, depth)                                 | Check a node                                                     |
-| uncheckNode(nodeId, depth)                               | Uncheck a node                                                   |
-| getSelectedNode()                                        | Return the selected node if you have selected a node             |
-| getCheckedNodes(argWanted, format = false)               | Return all checked nodes                                         |
-| getExpandedNodes(argWanted, format = false)              | Return all expanded nodes                                        |
-| checkAllNodes()                                          | Check all nodes                                                  |
-| uncheckAllNodes()                                        | Uncheck all nodes                                                |
-| expandNode(nodeId, depth)                                | Expand a node                                                    |
-| collapseNode(nodeId, depth)                              | Collapse a node                                                  |
-| selectNode(nodeId, depth)                                | Select a node and deselect the previously selected node if exist |
-| expandAllNodes()                                         | Expand all nodes                                                 |
-| collapseAllNodes()                                       | Collapse all nodes                                               |
-| deselectAllNodes()                                       | Deselect all nodes                                               |
-| findNode(nodeId, maxDepth = 9999)                        | Find and return a node                                           |
-| getVisibleNodes(fullNode = false)                        | Get all visible nodes                                            |
-| getNodesData(argWanted, conditions = {}, format = false) | Customizable function that return nodes                          |
+| Function                                                 | Detail                                                               |
+|----------------------------------------------------------|----------------------------------------------------------------------|
+| checkNode(nodeId, depth)                                 | Check a node                                                         |
+| uncheckNode(nodeId, depth)                               | Uncheck a node                                                       |
+| getSelectedNode()                                        | Return the selected node if you have selected a node                 |
+| getCheckedNodes(argWanted, format = false)               | Return all checked nodes                                             |
+| getExpandedNodes(argWanted, format = false)              | Return all expanded nodes                                            |
+| checkAllNodes()                                          | Check all nodes                                                      |
+| uncheckAllNodes()                                        | Uncheck all nodes                                                    |
+| expandNode(nodeId, depth)                                | Expand a node                                                        |
+| collapseNode(nodeId, depth)                              | Collapse a node                                                      |
+| selectNode(nodeId, depth)                                | Select a node and deselect the previously selected node if it exists |
+| expandAllNodes()                                         | Expand all nodes                                                     |
+| collapseAllNodes()                                       | Collapse all nodes                                                   |
+| deselectAllNodes()                                       | Deselect all nodes                                                   |
+| findNode(nodeId, maxDepth = 9999)                        | Find and return a node                                               |
+| getVisibleNodes(fullNode = false)                        | Get all visible nodes                                                |
+| getNodesData(argWanted, conditions = {}, format = false) | Customizable function that returns nodes                             |
 
 ### Get the tree instance
 
