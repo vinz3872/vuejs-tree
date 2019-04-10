@@ -36,7 +36,7 @@ Add the following lines at the top of your .js file which contains your Vue inst
 
   // in your vue instance
   components: {
-    'tree': Tree
+    'Tree': Tree
   },
   methods: {
     getTree: function(treeId) {
