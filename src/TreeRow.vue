@@ -391,11 +391,16 @@
     }
   }
   .expanded_icon {
-    font-size: 16px;
-    transform: translateY(-5%) rotate(0deg);
+    transform: rotate(0deg);
     transition: all ease .2s;
+    display: inline-block;
+    width: 0;
+    height: 0;
+    border-style: solid;
+    border-width: 4px 0 4px 8px;
+    border-color: transparent transparent transparent #555;
     &.expanded {
-      transform: translateY(-5%) rotate(90deg);
+      transform: rotate(90deg);
     }
   }
   .add_icon:before {
