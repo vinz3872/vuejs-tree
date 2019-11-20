@@ -8,6 +8,9 @@ A highly customizable vuejs tree viewer
 
 ![tree](https://raw.githubusercontent.com/scalia/vuejs-tree/7b6d80f7362cdaf0da9eba9997a9b132c5b99e7b/images/tree.png)
 
+#### Example
+
+[codesandbox](https://codesandbox.io/s/vue-template-lmbyx)
 
 ## Getting Started
 
