@@ -95,327 +95,326 @@
 </template>
 
 <script type="text/javascript">
-  export default {
-    name: 'tree-row',
-    props: {
-      node: {
-        type: Object,
-        required: true,
-      },
-      depth: Number,
-      customOptions: Object,
-      customStyles: Object,
-      parentNode: Object,
+export default {
+  name: 'tree-row',
+  props: {
+    node: {
+      type: Object,
+      required: true
     },
-    data: function() {
-      return {
-        styles: {
-          row: {
-            width: '500px',
-            cursor: 'pointer',
-            child: {
-              height: '35px',
-            },
+    depth: Number,
+    customOptions: Object,
+    customStyles: Object,
+    parentNode: Object
+  },
+  data () {
+    return {
+      styles: {
+        row: {
+          width: '500px',
+          cursor: 'pointer',
+          child: {
+            height: '35px'
+          }
+        },
+        expanded: {
+          class: 'expanded_icon'
+        },
+        addNode: {
+          class: 'add_icon',
+          style: {
+            color: '#007AD5'
+          }
+        },
+        editNode: {
+          class: 'edit_icon',
+          style: {
+            color: '#007AD5'
+          }
+        },
+        deleteNode: {
+          class: 'delete_icon',
+          style: {
+            color: '#EE5F5B'
+          }
+        },
+        selectIcon: {
+          class: 'folder_icon',
+          style: {
+            color: '#007AD5'
           },
+          active: {
+            class: 'folder_icon_active',
+            style: {
+              color: '#2ECC71'
+            }
+          }
+        },
+        text: {
+          style: {},
+          active: {
+            style: {
+              'font-weight': 'bold',
+              color: '#2ECC71'
+            }
+          }
+        }
+      },
+      options: {
+        events: {
           expanded: {
-            class: 'expanded_icon',
+            state: true,
+            fn: this.toggleExpanded
           },
-          addNode: {
-            class: 'add_icon',
-            style: {
-              color: '#007AD5',
-            }
+          selected: {
+            state: false,
+            fn: this.toggleSelected
           },
-          editNode: {
-            class: 'edit_icon',
-            style: {
-              color: '#007AD5',
-            }
+          checked: {
+            state: false,
+            fn: this.toggleChecked
           },
-          deleteNode: {
-            class: 'delete_icon',
-            style: {
-              color: '#EE5F5B',
-            }
-          },
-          selectIcon: {
-            class: 'folder_icon',
-            style: {
-              color: '#007AD5',
-            },
-            active: {
-              class: 'folder_icon_active',
-              style: {
-                color: '#2ECC71',
-              },
-            }
-          },
-          text: {
-            style: {},
-            active: {
-              style: {
-                'font-weight': 'bold',
-                color: '#2ECC71',
-              }
-            }
+          editableName: {
+            state: false,
+            fn: null,
+            calledEvent: null
           }
         },
-        options: {
-          events: {
-            expanded: {
-              state: true,
-              fn: this.toggleExpanded,
-            },
-            selected: {
-              state: false,
-              fn: this.toggleSelected,
-            },
-            checked: {
-              state: false,
-              fn: this.toggleChecked,
-            },
-            editableName: {
-              state: false,
-              fn: null,
-              calledEvent: null,
-            }
-          },
-          addNode: { state: false, fn: null, appearOnHover: false },
-          editNode: { state: false, fn: null, appearOnHover: false },
-          deleteNode: { state: false, fn: null, appearOnHover: false },
-          showTags: false,
-        },
-        checked: false,
-        expanded: false,
-        selected: false
+        addNode: { state: false, fn: null, appearOnHover: false },
+        editNode: { state: false, fn: null, appearOnHover: false },
+        deleteNode: { state: false, fn: null, appearOnHover: false },
+        showTags: false
+      },
+      checked: false,
+      expanded: false,
+      selected: false
+    }
+  },
+  watch: {
+    checked () {
+      this.node.state.checked = this.checked
+    },
+    expanded () {
+      this.node.state.expanded = this.expanded
+    },
+    selected () {
+      this.node.state.selected = this.selected
+    }
+  },
+  mounted () {
+    this.copyOptions(this.customOptions, this.options)
+    this.copyOptions(this.customStyles, this.styles)
+    if (this.node.state) {
+      this.checked = this.node.state.checked
+      this.expanded = this.node.state.expanded
+      this.selected = this.node.state.selected
+    } else {
+      this.node.state = { checked: false, expanded: false, selected: false }
+    }
+  },
+  methods: {
+    toggleEvent (eventType, node) {
+      if (eventType === 'editableName' && this.options.events['editableName'].calledEvent) {
+        this.toggleEvent(this.options.events['editableName'].calledEvent, node)
+      } else if (this.options.events[eventType].state === true) {
+        const fnName = this.options.events[eventType].fn
+        fnName(node, this)
       }
     },
-    watch: {
-      checked: function() {
-        this.node.state.checked = this.checked;
-      },
-      expanded: function() {
-        this.node.state.expanded = this.expanded;
-      },
-      selected: function() {
-        this.node.state.selected = this.selected;
+    toggleExpanded (node, instance) {
+      this.expanded = !this.expanded
+      this.node.state.expanded = this.expanded
+      this.$nextTick(() => {
+        this.$emit('emitNodeExpanded', node, this.expanded)
+      })
+    },
+    toggleSelected (node, instance) {
+      this.selected = !this.selected
+      this.node.state.selected = this.selected
+      this.$emit('emitNodeSelected', node)
+    },
+    toggleChecked (node, instance) {
+      this.checked = !this.checked
+      this.node.state.checked = this.checked
+      this.$nextTick(() => {
+        this.callNodesChecked(this.checked)
+        this.$emit('emitNodeChecked', node)
+      })
+    },
+    emitNodeSelected (nodeSelected) { // redirect the event toward the Tree component
+      this.$emit('emitNodeSelected', nodeSelected)
+    },
+    emitNodeExpanded (node, state) { // redirect the event toward the Tree component
+      this.$emit('emitNodeExpanded', node, state)
+    },
+    emitNodeChecked (nodeChecked) { // redirect the event toward the Tree component
+      this.$emit('emitNodeChecked', nodeChecked)
+    },
+    recCallNodes (state, event, nodes) {
+      const _this = this
+      nodes.forEach((node) => {
+        if (!node.state) node.state = { checked: false, expanded: false, selected: false }
+        node.state[event] = state
+        if (node.nodes) {
+          _this.recCallNodes(state, event, node.nodes)
+        }
+      })
+    },
+    callNodesChecked (state) {
+      this.checked = state
+      for (let i = 0; i < this.$children.length; i++) {
+        this.$children[i].callNodesChecked(state)
+      }
+      if (this.$children.length === 0 && this.node.nodes && this.node.nodes.length > 0) {
+        this.recCallNodes(state, 'checked', this.node.nodes)
       }
     },
-    mounted: function() {
-      this.copyOptions(this.customOptions, this.options);
-      this.copyOptions(this.customStyles, this.styles);
-      if (this.node.state) {
-        this.checked = this.node.state.checked;
-        this.expanded = this.node.state.expanded;
-        this.selected = this.node.state.selected;
+    callNodesDeselect () {
+      this.selected = false
+      this.node.state.selected = this.selected
+      for (let i = 0; i < this.$children.length; i++) {
+        this.$children[i].callNodesDeselect()
+      }
+      if (this.$children.length === 0 && this.node.nodes && this.node.nodes.length > 0) {
+        this.recCallNodes(false, 'selected', this.node.nodes)
+      }
+    },
+    callSpecificChild (arrIds, fname, args) {
+      for (let i = 0; i < this.$children.length; i++) {
+        let currentNodeId = this.$children[i].$props.node.id
+        if (arrIds.find(x => x === currentNodeId)) {
+          this.$children[i][fname](args)
+          return false
+        }
+      }
+    },
+    callNodeChecked (args) {
+      const arrIds = args.arrIds
+      const value = args.value
+      if (arrIds[arrIds.length - 1] === this.node.id) {
+        this.checked = value
+        this.callNodesChecked(this.checked)
       } else {
-        this.node.state = {checked: false, expanded: false, selected: false}
+        this.expanded = true
+        this.$nextTick(() => {
+          this.callSpecificChild(arrIds, 'callNodeChecked', args)
+        })
       }
     },
-    methods: {
-      toggleEvent: function(eventType, node) {
-        if (eventType == 'editableName' && this.options.events['editableName'].calledEvent) {
-          this.toggleEvent(this.options.events['editableName'].calledEvent, node);
-        } else if (this.options.events[eventType].state == true) {
-          const fnName = this.options.events[eventType].fn;
-          fnName(node, this);
-        }
-      },
-      toggleExpanded: function(node, instance) {
-        this.expanded = !this.expanded;
-        this.node.state.expanded = this.expanded;
-        this.$nextTick(function() {
-          this.$emit('emitNodeExpanded', node, this.expanded);
+    callNodeSelected (args) {
+      const arrIds = args.arrIds
+      const value = args.value
+      if (arrIds[arrIds.length - 1] === this.node.id) {
+        this.selected = value
+      } else {
+        this.expanded = true
+        this.$nextTick(() => {
+          this.callSpecificChild(arrIds, 'callNodeSelected', args)
         })
-      },
-      toggleSelected: function(node, instance) {
-        this.selected = !this.selected;
-        this.node.state.selected = this.selected;
-        this.$emit('emitNodeSelected', node);
-      },
-      toggleChecked: function(node, instance) {
-        this.checked = !this.checked;
-        this.node.state.checked = this.checked;
-        this.$nextTick(function() {
-          this.callNodesChecked(this.checked);
-          this.$emit('emitNodeChecked', node);
+      }
+    },
+    callNodeExpanded (args) {
+      const arrIds = args.arrIds
+      const value = args.value
+      if (value === false && this.expanded === false) return
+      if (arrIds[arrIds.length - 1] !== this.node.id) {
+        this.expanded = true
+        this.$nextTick(() => {
+          this.callSpecificChild(arrIds, 'callNodeExpanded', args)
         })
-      },
-      emitNodeSelected: function(nodeSelected) { // redirect the event toward the Tree component
-        this.$emit('emitNodeSelected', nodeSelected);
-      },
-      emitNodeExpanded: function(node, state) { // redirect the event toward the Tree component
-        this.$emit('emitNodeExpanded', node, state);
-      },
-      emitNodeChecked: function(nodeChecked) { // redirect the event toward the Tree component
-        this.$emit('emitNodeChecked', nodeChecked);
-      },
-      recCallNodes: function(state, event, nodes) {
-        const _this = this;
-        nodes.forEach(function(node) {
-          if (!node.state) node.state = {checked: false, expanded: false, selected: false}
-          node.state[event] = state;
-          if (node.nodes) {
-            _this.recCallNodes(state, event, node.nodes);
-          }
-        })
-      },
-      callNodesChecked: function(state) {
-        this.checked = state;
-        for (let i = 0; i < this.$children.length; i++) {
-          this.$children[i].callNodesChecked(state);
-        }
-        if (this.$children.length == 0 && this.node.nodes && this.node.nodes.length > 0) {
-          this.recCallNodes(state, "checked", this.node.nodes);
-        }
-      },
-      callNodesDeselect: function() {
-        this.selected = false;
-        this.node.state.selected = this.selected;
-        for (let i = 0; i < this.$children.length; i++) {
-          this.$children[i].callNodesDeselect();
-        }
-        if (this.$children.length == 0 && this.node.nodes&& this.node.nodes.length > 0) {
-          this.recCallNodes(false, "selected", this.node.nodes);
-        }
-      },
-      callSpecificChild: function(arrIds, fname, args) {
-        for (let i = 0; i < this.$children.length; i++) {
-          let currentNodeId = this.$children[i].$props.node.id;
-          if (arrIds.find(x => x == currentNodeId)) {
-            this.$children[i][fname](args);
-            return false;
-          }
-        }
-      },
-      callNodeChecked: function(args) {
-        const arrIds = args.arrIds;
-        const value = args.value;
-        if (arrIds[arrIds.length - 1] == this.node.id) {
-          this.checked = value;
-          this.callNodesChecked(this.checked);
+      } else {
+        this.expanded = value
+      }
+    },
+    copyOptions (src, dst) {
+      for (var key in src) {
+        if (!dst[key]) {
+          dst[key] = src[key]
+        } else if (typeof (src[key]) === 'object') {
+          this.copyOptions(src[key], dst[key])
         } else {
-          this.expanded = true;
-          this.$nextTick(function() {
-            this.callSpecificChild(arrIds, 'callNodeChecked', args);
-          })
+          dst[key] = src[key]
         }
-      },
-      callNodeSelected: function(args) {
-        const arrIds = args.arrIds;
-        const value = args.value;
-        if (arrIds[arrIds.length - 1] == this.node.id) {
-          this.selected = value;
-        } else {
-          this.expanded = true;
-          this.$nextTick(function() {
-            this.callSpecificChild(arrIds, 'callNodeSelected', args);
-          })
-        }
-      },
-      callNodeExpanded: function(args) {
-        const arrIds = args.arrIds;
-        const value = args.value;
-        if (value == false && this.expanded == false) return;
-        if (arrIds[arrIds.length - 1] != this.node.id) {
-          this.expanded = true;
-          this.$nextTick(function() {
-            this.callSpecificChild(arrIds, 'callNodeExpanded', args);
-          })
-        } else {
-          this.expanded = value;
-        }
-      },
-      copyOptions: function(src, dst) {
-        for(var key in src) {
-          if (!dst[key]) {
-            dst[key] = src[key];
-          } else if (typeof(src[key]) == "object") {
-            this.copyOptions(src[key], dst[key]);
-          } else {
-            dst[key] = src[key];
-          }
-        }
-      },
+      }
     }
   }
+}
 
 </script>
 
-
 <style lang="scss" scoped>
-  .tree-indent {
-    margin: 0 10px;
-    display: inline-block;
+.tree-indent {
+  margin: 0 10px;
+  display: inline-block;
+}
+.small-tree-indent {
+  margin: 0 3px;
+  display: inline-block;
+}
+.icon-hover {
+  visibility: hidden;
+  opacity: 0;
+  transition: all .2s ease-in-out;
+}
+.row_data:hover .icon-hover{
+  visibility: visible;
+  opacity: 1;
+}
+.capitalize {
+  text-transform: capitalize;
+}
+.badge {
+  font-size: 12px;
+  font-weight: normal;
+}
+li {
+  list-style: none;
+}
+.icon_margin {
+  margin: 0 5px 0 0;
+}
+.icon_parent {
+  background: transparent;
+  width: 20px;
+  height: 20px;
+  display: inline-block;
+  vertical-align: middle;
+  text-align: center;
+  margin: 0 2px 0 0;
+  i {
+    font-size: 16px;
+    line-height: 10px;
   }
-  .small-tree-indent {
-    margin: 0 3px;
-    display: inline-block;
+  &:last-child {
+    margin: 0;
   }
-  .icon-hover {
-    visibility: hidden;
-    opacity: 0;
-    transition: all .2s ease-in-out;
+}
+.expanded_icon {
+  transform: rotate(0deg);
+  transition: all ease .2s;
+  display: inline-block;
+  width: 0;
+  height: 0;
+  border-style: solid;
+  border-width: 4px 0 4px 8px;
+  border-color: transparent transparent transparent #555;
+  &.expanded {
+    transform: rotate(90deg);
   }
-  .row_data:hover .icon-hover{
-    visibility: visible;
-    opacity: 1;
-  }
-  .capitalize {
-    text-transform: capitalize;
-  }
-  .badge {
-    font-size: 12px;
-    font-weight: normal;
-  }
-  li {
-    list-style: none;
-  }
-  .icon_margin {
-    margin: 0 5px 0 0;
-  }
-  .icon_parent {
-    background: transparent;
-    width: 20px;
-    height: 20px;
-    display: inline-block;
-    vertical-align: middle;
-    text-align: center;
-    margin: 0 2px 0 0;
-    i {
-      font-size: 16px;
-      line-height: 10px;
-    }
-    &:last-child {
-      margin: 0;
-    }
-  }
-  .expanded_icon {
-    transform: rotate(0deg);
-    transition: all ease .2s;
-    display: inline-block;
-    width: 0;
-    height: 0;
-    border-style: solid;
-    border-width: 4px 0 4px 8px;
-    border-color: transparent transparent transparent #555;
-    &.expanded {
-      transform: rotate(90deg);
-    }
-  }
-  .add_icon:before {
-    content: '\002b';
-  }
-  .edit_icon:before {
-    content: '\00270e';
-  }
-  .delete_icon:before {
-    content: '\00d7';
-  }
-  .folder_icon:before {
-    content: '\1F4C1';
-  }
-  .folder_icon_active:before {
-    content: '\1F4C2';
-  }
+}
+.add_icon:before {
+  content: '\002b';
+}
+.edit_icon:before {
+  content: '\00270e';
+}
+.delete_icon:before {
+  content: '\00d7';
+}
+.folder_icon:before {
+  content: '\1F4C1';
+}
+.folder_icon_active:before {
+  content: '\1F4C2';
+}
 </style>
