@@ -215,7 +215,6 @@ export default {
   },
   methods: {
     toggleEvent (eventType, node) {
-      console.log(eventType, node.id)
       if (eventType === 'editableName' && this.options.events['editableName'].calledEvent) {
         this.toggleEvent(this.options.events['editableName'].calledEvent, node)
       } else if (this.options.events[eventType].state === true) {
