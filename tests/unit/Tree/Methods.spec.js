@@ -243,6 +243,12 @@ describe('selectNode', () => {
     // select a nested node
     tree.selectNode(tree.nodes[0].nodes[0].id)
     expect(tree.selectedNode).toEqual(tree.nodes[0].nodes[0])
+
+    // select an other node
+    tree.selectNode(tree.nodes[1].id)
+    expect(tree.nodes[0].state.selected).toEqual(false)
+    expect(tree.nodes[0].nodes[0].state.selected).toEqual(false)
+    expect(tree.selectedNode).toEqual(tree.nodes[1])
   })
 })
 

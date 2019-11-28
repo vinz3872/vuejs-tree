@@ -113,7 +113,7 @@ export default {
         if (nodeId == node.id && maxDepth >= depth) {
           ret.unshift(node.id)
           return false
-        } else if (node.nodes && maxDepth > depth && (tmp = _this.recFindNodePath(nodeId, node.nodes, depth + 1, maxDepth)) != null) {
+        } else if (node.nodes && maxDepth > depth && (tmp = _this.recFindNodePath(nodeId, node.nodes, depth + 1, maxDepth)) != null && tmp.length > 0) {
           tmp.unshift(node.id)
           ret = tmp
           return false
