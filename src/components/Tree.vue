@@ -1,10 +1,11 @@
 <template>
-  <div id="tree">
+  <div :id="id">
     <ul
       :style="styles.tree"
       v-if="force">
       <template v-for="node in nodes">
         <tree-row
+          :ref="'tree-row-' + node.id"
           :custom-options="customOptions"
           :custom-styles="customStyles"
           :depth="1"
@@ -34,7 +35,10 @@ export default {
       default: () => { return {} },
       type: Object
     },
-    id: String,
+    id: {
+      default: 'tree',
+      type: String
+    },
     nodes: {
       type: Array,
       required: true
@@ -71,7 +75,6 @@ export default {
         }
       },
       selectedNode: null,
-      expandedNodes: {},
       force: true
     }
   },
@@ -107,7 +110,7 @@ export default {
 
       nodes.forEach((node) => {
         let tmp = []
-        if (nodeId === node.id && maxDepth >= depth) {
+        if (nodeId == node.id && maxDepth >= depth) {
           ret.unshift(node.id)
           return false
         } else if (node.nodes && maxDepth > depth && (tmp = _this.recFindNodePath(nodeId, node.nodes, depth + 1, maxDepth)) != null) {
@@ -117,7 +120,6 @@ export default {
         }
       })
 
-      if (ret.length === 0) return null
       return ret
     },
     findNodePath (nodeId, maxDepth = 9999) {
@@ -129,7 +131,7 @@ export default {
 
       nodes.forEach((node) => {
         let tmp = []
-        if (nodeId === node.id && maxDepth >= depth) {
+        if (nodeId == node.id && maxDepth >= depth) {
           ret = node
           return false
         } else if (node.nodes && maxDepth > depth && (tmp = _this.recFindNode(nodeId, node.nodes, depth + 1, maxDepth)) != null) {
@@ -155,8 +157,10 @@ export default {
         this.callSpecificChild(arrIds, 'callNodeSelected', { value: false, arrIds: arrIds })
         this.selectedNode = nodeSelected
         this.$nextTick(() => {
-          const selectArrIds = _this.findNodePath(_this.selectedNode.id, _this.selectedNode.depth)
-          _this.callSpecificChild(selectArrIds, 'callNodeSelected', { value: true, arrIds: selectArrIds })
+          if (_this.selectedNode) {
+            const selectArrIds = _this.findNodePath(_this.selectedNode.id, _this.selectedNode.depth)
+            _this.callSpecificChild(selectArrIds, 'callNodeSelected', { value: true, arrIds: selectArrIds })
+          }
         })
       }
 
@@ -170,11 +174,6 @@ export default {
       }
     },
     onNodeExpanded (node, state) { // called when a TreeRow is expanded or closed
-      if (state === false) {
-        this.nodeCollapsed(node.id, null, node.depth)
-      } else {
-        this.nodeExpanded(node.id, null, node.depth)
-      }
       let fn = null
       if (state === true && this.options.treeEvents.expanded && this.options.treeEvents.expanded.state === true) {
         fn = this.customOptions.treeEvents.expanded.fn
@@ -196,11 +195,10 @@ export default {
       }
     },
     callSpecificChild (arrIds, fname, args) {
-      for (let i = 0; i < this.$children.length; i++) {
-        let currentNodeId = this.$children[i].$props.node.id
-        if (arrIds.find(x => x === currentNodeId)) {
-          this.$children[i][fname](args)
-          return false
+      for (let id of arrIds) {
+        const childs = this.$refs['tree-row-' + id]
+        if (childs) {
+          childs[0][fname](args)
         }
       }
     },
@@ -228,62 +226,43 @@ export default {
       return this.getNodesData(argWanted, { expanded: true }, format)
     },
     checkAllNodes () {
-      for (let i = 0; i < this.$children.length; i++) {
-        this.$children[i].callNodesChecked(true)
-      }
+      this.callSpecificChild(this.nodes.map(x => x.id), 'callNodesChecked', true)
     },
     uncheckAllNodes () {
-      for (let i = 0; i < this.$children.length; i++) {
-        this.$children[i].callNodesChecked(false)
-      }
+      this.callSpecificChild(this.nodes.map(x => x.id), 'callNodesChecked', false)
     },
     recExpandAllNodes (nodes) {
-      const openedTmp = {}
-      for (let i = 0; i < nodes.length; i++) {
-        nodes[i].state.expanded = true
-        if (nodes[i].nodes) {
-          openedTmp[nodes[i].id] = this.recExpandAllNodes(nodes[i].nodes)
+      let hasChild = false
+      for (let node of nodes) {
+        if (node.nodes) {
+          hasChild = true
+          if (this.recExpandAllNodes(node.nodes) === false) {
+            this.expandNode(node.id)
+          }
         }
       }
-      return openedTmp
+      return hasChild
     },
     expandAllNodes () {
-      const openedTmp = {}
-      for (let i = 0; i < this.nodes.length; i++) {
-        this.nodes[i].state.expanded = true
-        if (this.nodes[i].nodes) {
-          openedTmp[this.nodes[i].id] = this.recExpandAllNodes(this.nodes[i].nodes)
-        }
-      }
-      this.expandedNodes = openedTmp
-      this.forceRender(this.nodes)
+      this.recExpandAllNodes(this.nodes)
     },
-    recCollapseAllNodes (hashIds) {
-      const _this = this
-      Object.entries(hashIds).forEach((arr) => {
-        _this.findNode(arr[0]).state.expanded = false
-        if (arr[1] && Object.keys(arr[1]).length > 0) _this.recCollapseAllNodes(arr[1])
-      })
+    recCollapseAllNodes (arrIds) {
+      for (let id of arrIds) {
+        this.findNode(id).state.expanded = false
+      }
     },
     collapseAllNodes () {
-      const _this = this
-      Object.entries(this.expandedNodes).forEach((arr) => {
-        _this.findNode(arr[0]).state.expanded = false
-        if (arr[1] && Object.keys(arr[1]).length > 0) _this.recCollapseAllNodes(arr[1])
-      })
-      this.expandedNodes = {}
-      this.forceRender(this.nodes)
+      this.recCollapseAllNodes(this.getExpandedNodes('id'))
+      for (let node of this.nodes) {
+        this.collapseNode(node.id)
+      }
     },
     deselectAllNodes () {
       this.selectedNode = null
-      for (let i = 0; i < this.$children.length; i++) {
-        this.$children[i].callNodesDeselect()
-      }
+      this.callSpecificChild(this.nodes.map(x => x.id), 'callNodesDeselect')
     },
     expandNode (nodeId, depth) {
       const arrIds = this.findNodePath(nodeId, depth)
-
-      this.nodeExpanded(nodeId, arrIds)
       this.callSpecificChild(arrIds, 'callNodeExpanded', {
         value: true,
         arrIds: arrIds
@@ -306,64 +285,26 @@ export default {
         })
       }
     },
-    nodeExpanded (nodeId, arrIds, depth) {
-      if (arrIds === undefined) {
-        arrIds = this.findNodePath(nodeId, depth)
-      }
-      const hash = this.expandedNodes
-      let tmpElem = hash
-      arrIds.forEach((id) => {
-        if (!tmpElem[id]) {
-          tmpElem[id] = {}
-        }
-        tmpElem = tmpElem[id]
-      })
-    },
     collapseNode (nodeId, depth) {
       const arrIds = this.findNodePath(nodeId, depth)
-      this.nodeCollapsed(nodeId, arrIds)
       this.callSpecificChild(arrIds, 'callNodeExpanded', {
         value: false,
         arrIds: arrIds
       })
     },
-    nodeCollapsed (nodeId, arrIds, depth) {
-      if (arrIds === undefined) {
-        arrIds = this.findNodePath(nodeId, depth)
-      }
-      const hash = this.expandedNodes
-      let tmpElem = hash
-
-      arrIds.forEach((id, i) => {
-        if (!tmpElem[id]) {
-          return false
-        } else if (i === arrIds.length - 1 && tmpElem[id]) {
-          delete tmpElem[id]
-        }
-        tmpElem = tmpElem[id]
-      })
-    },
     recGetVisibleNodes (arr, elem, fullNode) {
-      const _this = this
-      const node = elem.$props.node
-      if (fullNode === true) {
-        arr.push(node)
-      } else {
-        arr.push(node.id)
+      if (elem.node) {
+        arr.push((fullNode ? elem.node : elem.node.id))
       }
-
-      elem.$children.forEach((child) => {
-        arr = _this.recGetVisibleNodes(arr, child, fullNode)
-      })
-      return arr
+      for (let child of Object.values(elem.$refs)) {
+        if (child && child[0]) {
+          this.recGetVisibleNodes(arr, child[0], fullNode)
+        }
+      }
     },
     getVisibleNodes (fullNode = false) {
-      const _this = this
       let arr = []
-
-      this.$children.forEach((child) => {
-        arr = _this.recGetVisibleNodes(arr, child, fullNode)
-      })
+      this.recGetVisibleNodes(arr, this, fullNode)
       return arr
     },
     recGetNodesData (argWanted, conditions, nodes) {

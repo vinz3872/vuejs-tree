@@ -29,7 +29,7 @@
         :data-id="node.id"
         :checked="checked"
         v-if="options.events.checked.state == true"
-        @click="toggleEvent('checked', node)"
+        @click.stop="toggleEvent('checked', node)"
       >
       <span
         data-toggle="tooltip"
@@ -79,6 +79,7 @@
     <ul v-if="expanded">
       <template v-for="child in node.nodes">
         <tree-row
+          :ref="'tree-row-' + child.id"
           :custom-options="customOptions"
           :custom-styles="customStyles"
           :depth="depth + 1"
@@ -214,6 +215,7 @@ export default {
   },
   methods: {
     toggleEvent (eventType, node) {
+      console.log(eventType, node.id)
       if (eventType === 'editableName' && this.options.events['editableName'].calledEvent) {
         this.toggleEvent(this.options.events['editableName'].calledEvent, node)
       } else if (this.options.events[eventType].state === true) {
@@ -282,7 +284,7 @@ export default {
     callSpecificChild (arrIds, fname, args) {
       for (let i = 0; i < this.$children.length; i++) {
         let currentNodeId = this.$children[i].$props.node.id
-        if (arrIds.find(x => x === currentNodeId)) {
+        if (arrIds.find(x => x == currentNodeId)) {
           this.$children[i][fname](args)
           return false
         }
@@ -291,7 +293,7 @@ export default {
     callNodeChecked (args) {
       const arrIds = args.arrIds
       const value = args.value
-      if (arrIds[arrIds.length - 1] === this.node.id) {
+      if (arrIds[arrIds.length - 1] == this.node.id) {
         this.checked = value
         this.callNodesChecked(this.checked)
       } else {
@@ -304,7 +306,7 @@ export default {
     callNodeSelected (args) {
       const arrIds = args.arrIds
       const value = args.value
-      if (arrIds[arrIds.length - 1] === this.node.id) {
+      if (arrIds[arrIds.length - 1] == this.node.id) {
         this.selected = value
       } else {
         this.expanded = true
@@ -317,11 +319,15 @@ export default {
       const arrIds = args.arrIds
       const value = args.value
       if (value === false && this.expanded === false) return
-      if (arrIds[arrIds.length - 1] !== this.node.id) {
-        this.expanded = true
-        this.$nextTick(() => {
+      if (arrIds[arrIds.length - 1] != this.node.id) {
+        if (value === true) {
+          this.expanded = true
+          this.$nextTick(() => {
+            this.callSpecificChild(arrIds, 'callNodeExpanded', args)
+          })
+        } else {
           this.callSpecificChild(arrIds, 'callNodeExpanded', args)
-        })
+        }
       } else {
         this.expanded = value
       }
@@ -412,9 +418,11 @@ li {
   content: '\00d7';
 }
 .folder_icon:before {
-  content: '\1F4C1';
+  content: '\1F5C0';
+  // content: '\1F4C1';
 }
 .folder_icon_active:before {
-  content: '\1F4C2';
+  content: '\1F5C1';
+  // content: '\1F4C2';
 }
 </style>

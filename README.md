@@ -41,19 +41,12 @@ Add the following lines at the top of your .js file which contains your Vue inst
   components: {
     'tree': Tree
   },
-  methods: {
-    getTree: function(treeId) {
-      for (let i = 0; i < this.$children.length; i++) {
-        if (this.$children[i].$props.id == treeId) return this.$children[i]
-      }
-    }
-  }
 ```
 
 
 Then add the following line in your html file to generate a tree. You can have as many trees per page as you want.
 ```html
-  <Tree id="my-tree-id" :custom-options="myCustomOptions" :custom-styles="myCustomStyles" :nodes="treeDisplayData"></Tree>
+  <Tree id="my-tree-id" ref="my-tree-ref" :custom-options="myCustomOptions" :custom-styles="myCustomStyles" :nodes="treeDisplayData"></Tree>
 ```
 
 
@@ -365,4 +358,5 @@ Methods Params:
 
 If you want to call any tree method, you need to get the instance.
 
-For that you just need to call the `getTree` function and provide your tree `id`.
+To get the tree instance you just need to be in the vue instance and use `this.$refs['my-tree-ref']`
+Then you can use a method like that: `this.$refs['my-tree-ref'].myMethod()`
