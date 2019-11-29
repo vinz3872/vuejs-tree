@@ -10,7 +10,7 @@
         <span v-for="(count, index) in depth" class="tree-indent" v-bind:key="index"></span>
         <i
           v-if="options.events.expanded.state == true && node.nodes != undefined && node.nodes.length > 0"
-          :class="[{'expanded': expanded == true}, styles.expanded.class, 'expanded_icon']">
+          :class="[{'expanded': expanded == true}, styles.expanded.class]">
         </i>
         <span
           v-else-if="options.events.expanded.state == true && node.nodes == undefined"
@@ -418,10 +418,8 @@ li {
 }
 .folder_icon:before {
   content: '\1F5C0';
-  // content: '\1F4C1';
 }
 .folder_icon_active:before {
   content: '\1F5C1';
-  // content: '\1F4C2';
 }
 </style>
