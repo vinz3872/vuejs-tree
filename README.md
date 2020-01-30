@@ -245,7 +245,6 @@ computed: {
 #### Styles
 | Option name | Detail                                                                                             |
 |-------------|----------------------------------------------------------------------------------------------------|
-| icon        | String - node folder icon                                                                          |
 | tree        | Object - override default tree css                                                                 |
 | row         | Object - override default tree node css                                                            |
 | row.child   | Object - override style of `<div>` into the `<li>` row (e.g. you can manage the height of the row) |
