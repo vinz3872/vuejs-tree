@@ -27,6 +27,9 @@ describe('Data', () => {
     expect(tree.options.treeEvents.selected).toHaveProperty('fn', null);
     expect(tree.options.treeEvents.checked).toHaveProperty('state', false);
     expect(tree.options.treeEvents.checked).toHaveProperty('fn', null);
+    console.log(tree.nodes[0])
+    expect(tree.nodes[0].options.events.checked).toHaveProperty('state', false)
+    expect(tree.nodes[1].options.events.checked).toHaveProperty('state', true)
   })
 
   it('can be overwriten', () => {
@@ -61,8 +64,8 @@ describe('Data', () => {
       propsData: propsData
     })
     const tree = wrapper.vm
-    expect(tree.selectedNode).toBeNull()
-    expect(tree.force).toBeTruthy()
+    expect(tree.selectedNode).toBeNull();
+    expect(tree.force).toBeTruthy();
     expect(tree.styles.tree).toHaveProperty('height', customStyles.tree.height);
     expect(tree.styles.tree).toHaveProperty('maxHeight', customStyles.tree.maxHeight);
     expect(tree.styles.tree).toHaveProperty('overflowY', customStyles.tree.overflowY);
