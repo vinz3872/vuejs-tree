@@ -27,9 +27,6 @@ describe('Data', () => {
     expect(tree.options.treeEvents.selected).toHaveProperty('fn', null);
     expect(tree.options.treeEvents.checked).toHaveProperty('state', false);
     expect(tree.options.treeEvents.checked).toHaveProperty('fn', null);
-    console.log(tree.nodes[0])
-    expect(tree.nodes[0].options.events.checked).toHaveProperty('state', false)
-    expect(tree.nodes[1].options.events.checked).toHaveProperty('state', true)
   })
 
   it('can be overwriten', () => {

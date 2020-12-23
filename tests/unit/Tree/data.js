@@ -8,9 +8,9 @@ export default {
     {
       text: 'Child 1',
       id: 3,
-      // state: {
-      //   checked: true
-      // },
+      state: {
+        checked: true,
+      },
       nodes: [
       {
         text: 'Grandchild 1',

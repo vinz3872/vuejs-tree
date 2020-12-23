@@ -147,11 +147,9 @@ describe('getCheckedNodes', () => {
   it('return checked node', () => {
     const tree = wrapper.vm
 
-    tree.nodes[0].state.checked = true
-    tree.onNodeChecked(tree.nodes[0])
     const checkedNodes = tree.getCheckedNodes('id')
     expect(checkedNodes.length).toEqual(1)
-    expect(checkedNodes[0]).toEqual(tree.nodes[0].id)
+    expect(checkedNodes[0]).toEqual(tree.nodes[0].nodes[0].id)
   })
 })
 
