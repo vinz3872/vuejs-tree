@@ -6,14 +6,14 @@ import data from './data.js'
 let wrapper;
 
 beforeEach(() => {
-  const { customOptions, customStyles, nodes } = data
-  const propsData = {
+  let { customOptions, customStyles, nodes } = data
+  let propsData = {
     customOptions,
     customStyles,
     nodes
   }
   wrapper = mount(Tree, {
-    propsData: propsData
+    propsData: JSON.parse(JSON.stringify(propsData))
   })
   return wrapper
 })
@@ -125,7 +125,8 @@ describe('uncheckNode', () => {
   it('uncheck a node', () => {
     const tree = wrapper.vm
 
-    tree.nodes[0].state.checked = true
+    tree.checkNode(1)
+    expect(tree.nodes[0].state.checked).toEqual(true)
     tree.uncheckNode(1)
     expect(tree.nodes[0].state.checked).toEqual(false)
   })
@@ -146,11 +147,9 @@ describe('getCheckedNodes', () => {
   it('return checked node', () => {
     const tree = wrapper.vm
 
-    tree.nodes[0].state.checked = true
-    tree.onNodeChecked(tree.nodes[0])
     const checkedNodes = tree.getCheckedNodes('id')
     expect(checkedNodes.length).toEqual(1)
-    expect(checkedNodes[0]).toEqual(tree.nodes[0].id)
+    expect(checkedNodes[0]).toEqual(tree.nodes[0].nodes[0].id)
   })
 })
 
@@ -158,8 +157,7 @@ describe('getExpandedNodes', () => {
   it('return expanded node', () => {
     const tree = wrapper.vm
 
-    tree.nodes[0].state.expanded = true
-    tree.onNodeExpanded(tree.nodes[0])
+    tree.expandNode(tree.nodes[0].id)
     const expandedNodes = tree.getExpandedNodes('id')
     expect(expandedNodes.length).toEqual(1)
     expect(expandedNodes[0]).toEqual(tree.nodes[0].id)
@@ -168,13 +166,15 @@ describe('getExpandedNodes', () => {
   it('return expanded node with parents', () => {
     const tree = wrapper.vm
 
-    tree.nodes[0].state.expanded = true
-    tree.nodes[0].nodes[0].state.expanded = true
-    tree.onNodeExpanded(tree.nodes[0].nodes[0])
-    const expandedNodes = tree.getExpandedNodes('id')
-    expect(expandedNodes.length).toEqual(2)
-    expect(expandedNodes[0]).toEqual(tree.nodes[0].id)
-    expect(expandedNodes[1]).toEqual(tree.nodes[0].nodes[0].id)
+    tree.expandNode(tree.nodes[0].id)
+    tree.expandNode(tree.nodes[0].nodes[0].id)
+
+    process.nextTick(() => {
+      const expandedNodes = tree.getExpandedNodes('id')
+      expect(expandedNodes.length).toEqual(2)
+      expect(expandedNodes[0]).toEqual(tree.nodes[0].id)
+      expect(expandedNodes[1]).toEqual(tree.nodes[0].nodes[0].id)
+    })
   })
 })
 
@@ -192,8 +192,9 @@ describe('uncheckAllNodes', () => {
   it('uncheck all nodes', () => {
     const tree = wrapper.vm
 
-    tree.nodes[0].state.checked = true
-    tree.nodes[1].state.checked = true
+    tree.checkNode(tree.nodes[0].id)
+    tree.checkNode(tree.nodes[1].id)
+    expect(tree.nodes[0].state.checked).toEqual(true)
     tree.uncheckAllNodes()
     expect(tree.nodes[0].state.checked).toEqual(false)
     expect(tree.nodes[1].state.checked).toEqual(false)
@@ -205,7 +206,10 @@ describe('expandAllNodes', () => {
     const tree = wrapper.vm
 
     tree.expandAllNodes()
-    expect(tree.nodes[0].nodes[0].state.expanded).toEqual(true)
+    expect(tree.nodes[0].state.expanded).toEqual(true)
+    process.nextTick(() =>
+      expect(tree.nodes[0].nodes[0].state.expanded).toEqual(true)
+    )
   })
 })
 
@@ -213,8 +217,8 @@ describe('collapseAllNodes', () => {
   it('collapse all nodes', () => {
     const tree = wrapper.vm
 
-    tree.nodes[0].state.expanded = true
-    tree.nodes[0].nodes[0].state.expanded = true
+    tree.expandAllNodes()
+    expect(tree.nodes[0].state.expanded).toEqual(true)
     tree.collapseAllNodes()
     expect(tree.nodes[0].state.expanded).toEqual(false)
     expect(tree.getExpandedNodes('id').length).toEqual(0)
@@ -239,7 +243,7 @@ describe('selectNode', () => {
     // select a node with depth 0
     tree.selectNode(tree.nodes[0].id)
     expect(tree.selectedNode).toEqual(tree.nodes[0])
-  
+
     // select a nested node
     tree.selectNode(tree.nodes[0].nodes[0].id)
     expect(tree.selectedNode).toEqual(tree.nodes[0].nodes[0])
@@ -262,7 +266,7 @@ describe('getVisibleNodes', () => {
 
     // return visible node ids
     expect(tree.getVisibleNodes(true)[0]).toEqual(tree.nodes[0])
-  
+
     tree.expandAllNodes()
     expect(tree.getVisibleNodes().length).not.toEqual([1,2])
   })
@@ -272,23 +276,35 @@ describe('getNodesData', () => {
   it('get expanded node ids', () => {
     const tree = wrapper.vm
 
+    tree.expandNode(tree.nodes[0].id)
+    tree.expandNode(tree.nodes[0].nodes[0].id)
     // return visible node ids
-    expect(tree.getNodesData('id', { expanded: true })).toEqual([1,3])
+    process.nextTick(() =>
+      expect(tree.getNodesData('id', { expanded: true })).toEqual([1,3])
+    )
   })
 
   it('get expanded nodes ids and text', () => {
     const tree = wrapper.vm
 
+    tree.expandNode(tree.nodes[0].id)
+    tree.expandNode(tree.nodes[0].nodes[0].id)
     // return visible node ids
-    const nodes = tree.getNodesData(['id', 'text'], { expanded: true })
-    expect(nodes.length).toEqual(2)
-    expect(nodes[0]).toEqual({'id': 1, 'text': 'Root 1'})
+    process.nextTick(() => {
+      const nodes = tree.getNodesData(['id', 'text'], { expanded: true })
+      expect(nodes.length).toEqual(2)
+      expect(nodes[0]).toEqual({'id': 1, 'text': 'Root 1'})
+    })
   })
 
   it('get expanded node tree ids', () => {
     const tree = wrapper.vm
 
+    tree.expandNode(tree.nodes[0].id)
+    tree.expandNode(tree.nodes[0].nodes[0].id)
     // return visible node ids
-    expect(tree.getNodesData('id', { expanded: true }, true)).toEqual({'1': {'3': {}}})
+    process.nextTick(() =>
+      expect(tree.getNodesData('id', { expanded: true }, true)).toEqual({'1': {'3': {}}})
+    )
   })
 })

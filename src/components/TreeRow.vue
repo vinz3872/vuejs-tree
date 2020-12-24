@@ -205,13 +205,15 @@ export default {
   mounted () {
     this.copyOptions(this.customOptions, this.options)
     this.copyOptions(this.customStyles, this.styles)
-    if (this.node.state) {
-      this.checked = this.node.state.checked
-      this.expanded = this.node.state.expanded
-      this.selected = this.node.state.selected
-    } else {
-      this.node.state = { checked: false, expanded: false, selected: false }
-    }
+    if (this.node.checkable !== undefined) this.options.events.checked.state = this.node.checkable
+    if (this.node.selectable !== undefined) this.options.events.selected.state = this.node.selectable
+    if (this.node.expandable !== undefined) this.options.events.expanded.state = this.node.expandable
+
+    const defaultState = { checked: false, expanded: false, selected: false }
+    this.node.state = { ...defaultState, ...this.node.state }
+    this.expanded = this.node.state.expanded
+    this.selected = this.node.state.selected
+    this.checked = this.node.state.checked
   },
   methods: {
     toggleEvent (eventType, node) {

@@ -98,7 +98,6 @@ Here is a fully customized node:
   checkable: false,
   selectable: false,
   expandable: true,
-  disabled: false,
   tags: [42],
   state: {
     checked: false,
@@ -120,15 +119,14 @@ The Following properties define a node level css and behavior.
 | text             | String --> Mandatory                   | The text value displayed at the right of the node icons                                                                                       |
 | definition       | String --> Optional                    | If some text is given, then it will show as a tooltip                                                                                         |
 | depth            | Integer --> Optional                   | It corresponds to the node depth, starting from 0, 1 or anything. It's advisable to fill these fields if some of your nodes have the same id |
-| disabled         | Boolean --> Optional, default: false | Used to specify if the node is disabled or not                                                                                               |
 | tags             | [Integer] --> Optional                 | The tag is displayed at the right end of the line                                                                                             |
 | checkable        | Boolean --> Optional, default: true  | Used to enable or disable the node's check event                                                                                              |
 | selectable       | Boolean --> Optional, default: true  | Used to enable or disable the node's select event                                                                                             |
 | expandable       | Boolean --> Optional, default: true  | Used to enable or disable the node's expand event                                                                                             |
-| state            |                                            | nodes's state                                                                                                                                 |
-| state.checkable  | Boolean --> Optional, default: true  | Another way to enable or disable the check event                                                                                              |
-| state.selectable | Boolean --> Optional, default: true  | Another way to enable or disable the select event                                                                                             |
-| state.expandable | Boolean --> Optional, default: true  | Another way to enable or disable the expand event                                                                                             |
+| state            |                                            | nodes's state                                                                                              |
+| state.checked  | Boolean --> Optional, default: false  | Change the node's default state  (at initialize)                                                                                              |
+| state.selected | Boolean --> Optional, default: false  | Change the node's default state  (at initialize)                                                                                                            |
+| state.expanded | Boolean --> Optional, default: false  | Change the node's default state  (at initialize)                                                                                                            |
 | nodes            | Object --> Optional                    | Used to display the node's children. *Look above for a structure example*                                                                         |
 
 ## Options / Styles

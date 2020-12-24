@@ -23,10 +23,14 @@ export default {
         {
           text: 'Root 1',
           id: 1,
+          checkable: false,
           nodes: [
             {
               text: 'Child 1',
               id: 3,
+              state: {
+                checked: true
+              },
               nodes: [
                 {
                   text: 'Grandchild 1',
