@@ -3,20 +3,19 @@
     <ul
       :style="styles.tree"
       v-if="force">
-      <template v-for="node in nodes">
-        <tree-row
-          :ref="'tree-row-' + node.id"
-          :custom-options="customOptions"
-          :custom-styles="customStyles"
-          :depth="1"
-          :key="node.id"
-          :node="node"
-          :parent-node="node"
-          v-on:emitNodeChecked="onNodeChecked"
-          v-on:emitNodeExpanded="onNodeExpanded"
-          v-on:emitNodeSelected="onNodeSelected">
-        </tree-row>
-      </template>
+      <tree-row
+        v-for="node in nodes"
+        :ref="'tree-row-' + node.id"
+        :custom-options="customOptions"
+        :custom-styles="customStyles"
+        :depth="1"
+        :key="node.id"
+        :node="node"
+        :parent-node="node"
+        v-on:emitNodeChecked="onNodeChecked"
+        v-on:emitNodeExpanded="onNodeExpanded"
+        v-on:emitNodeSelected="onNodeSelected">
+      </tree-row>
     </ul>
   </div>
 </template>

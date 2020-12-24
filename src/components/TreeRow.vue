@@ -77,20 +77,19 @@
       </span>
     </div>
     <ul v-if="expanded">
-      <template v-for="child in node.nodes">
-        <tree-row
-          :ref="'tree-row-' + child.id"
-          :custom-options="customOptions"
-          :custom-styles="customStyles"
-          :depth="depth + 1"
-          :key="child.id"
-          :node="child"
-          :parent-node="node"
-          v-on:emitNodeChecked="emitNodeChecked"
-          v-on:emitNodeExpanded="emitNodeExpanded"
-          v-on:emitNodeSelected="emitNodeSelected">
-        </tree-row>
-      </template>
+      <tree-row
+        v-for="child in node.nodes"
+        :ref="'tree-row-' + child.id"
+        :custom-options="customOptions"
+        :custom-styles="customStyles"
+        :depth="depth + 1"
+        :key="child.id"
+        :node="child"
+        :parent-node="node"
+        v-on:emitNodeChecked="emitNodeChecked"
+        v-on:emitNodeExpanded="emitNodeExpanded"
+        v-on:emitNodeSelected="emitNodeSelected">
+      </tree-row>
     </ul>
   </li>
 </template>
