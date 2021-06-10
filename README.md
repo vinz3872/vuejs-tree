@@ -142,7 +142,8 @@ computed: {
         height: 'auto',
         maxHeight: '300px',
         overflowY: 'visible',
-        display: 'inline-block'
+        display: 'inline-block',
+        textAlign: 'left'
       },
       row: {
         width: '500px',
@@ -246,6 +247,7 @@ computed: {
 | tree        | Object - override default tree css                                                                 |
 | row         | Object - override default tree node css                                                            |
 | row.child   | Object - override style of `<div>` into the `<li>` row (e.g. you can manage the height of the row) |
+| rowIndent   | Object - override style of `<ul>`  (e.g. you can manage the child node indent)                     |
 | expanded    | Object - contains the class of the expanded icon                                                   |
 | addNode     | Object - contains the class and the style of the addNode button                                    |
 | editNode    | Object - contains the class and the style of the editNode button                                   |

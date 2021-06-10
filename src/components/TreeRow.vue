@@ -7,7 +7,6 @@
       :style="styles.row.child"
       @click="toggleEvent('selected', node, 'node', $event)">
       <span @click.stop="options.events.expanded.state == true && node.nodes != undefined && node.nodes.length > 0 && toggleEvent('expanded', node)">
-        <span v-for="(count, index) in depth" class="tree-indent" v-bind:key="index"></span>
         <i
           v-if="options.events.expanded.state == true && node.nodes != undefined && node.nodes.length > 0"
           :class="[{'expanded': expanded == true}, styles.expanded.class]">
@@ -76,7 +75,7 @@
         </span>
       </span>
     </div>
-    <ul v-if="expanded">
+    <ul v-if="expanded" :style="styles.rowIndent">
       <tree-row
         v-for="child in node.nodes"
         :ref="'tree-row-' + child.id"
@@ -116,6 +115,9 @@ export default {
           child: {
             height: '35px'
           }
+        },
+        rowIndent: {
+          paddingLeft: '20px'
         },
         expanded: {
           class: 'expanded_icon'
@@ -349,10 +351,6 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.tree-indent {
-  margin: 0 10px;
-  display: inline-block;
-}
 .small-tree-indent {
   margin: 0 3px;
   display: inline-block;
