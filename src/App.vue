@@ -62,7 +62,8 @@ export default {
           height: 'auto',
           maxHeight: '300px',
           overflowY: 'visible',
-          display: 'inline-block'
+          display: 'inline-block',
+          textAlign: 'left'
         },
         row: {
           width: '500px',
@@ -155,10 +156,6 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.tree-indent {
-  margin: 0 10px;
-  display: inline-block;
-}
 .small-tree-indent {
   margin: 0 3px;
   display: inline-block;
