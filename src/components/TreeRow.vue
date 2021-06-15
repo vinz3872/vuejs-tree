@@ -5,7 +5,7 @@
     :style="styles.row">
     <div class="row_data"
       :style="styles.row.child"
-      @click="toggleEvent('selected', node, 'node', $event)">
+      @click="toggleEvent('selected', node)">
       <span @click.stop="options.events.expanded.state == true && node.nodes != undefined && node.nodes.length > 0 && toggleEvent('expanded', node)">
         <i
           v-if="options.events.expanded.state == true && node.nodes != undefined && node.nodes.length > 0"
@@ -34,8 +34,7 @@
         data-toggle="tooltip"
         data-placement="top"
         :title="node.definition"
-        class="capitalize"
-        v-bind:class="{'selected': selected}"
+        v-bind:class="[{'selected': selected}, styles.text.class]"
         :style="selected ? styles.text.active.style : styles.text.style"
         @click.stop="options.events.editableName.state && toggleEvent('editableName', node)" >
         {{ node.text }}
@@ -154,6 +153,7 @@ export default {
         },
         text: {
           style: {},
+          class: 'capitalize',
           active: {
             style: {
               'font-weight': 'bold',
@@ -373,9 +373,6 @@ export default {
 }
 li {
   list-style: none;
-}
-.icon_margin {
-  margin: 0 5px 0 0;
 }
 .icon_parent {
   background: transparent;
