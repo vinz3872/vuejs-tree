@@ -146,10 +146,21 @@ computed: {
         textAlign: 'left'
       },
       row: {
-        width: '500px',
-        cursor: 'pointer',
+        style: {
+          width: '500px',
+          cursor: 'pointer'
+        }
         child: {
-          height: '35px'
+          class: '',
+          style: {
+            height: '35px'
+          },
+          active: {
+            class: 'custom_row_active_class',
+            style: {
+              height: '35px'
+            }
+          }
         }
       },
       addNode: {
@@ -242,18 +253,19 @@ computed: {
 ```
 
 #### Styles
+
 | Option name | Detail                                                                                             |
 |-------------|----------------------------------------------------------------------------------------------------|
-| tree        | Object - override default tree css                                                                 |
-| row         | Object - override default tree node css                                                            |
-| row.child   | Object - override style of `<div>` into the `<li>` row (e.g. you can manage the height of the row) |
-| rowIndent   | Object - override style of `<ul>`  (e.g. you can manage the child node indent)                     |
-| expanded    | Object - contains the class of the expanded icon                                                   |
-| addNode     | Object - contains the class and the style of the addNode button                                    |
-| editNode    | Object - contains the class and the style of the editNode button                                   |
-| deleteNode  | Object - contains the class and the style of the deleteNode button                                 |
-| selectIcon  | Object - contains the class and the style for the select node icon                                 |
-| text        | Object - contains the class and the style for the node's text                                      |
+| tree        | Object - override default tree css |
+| row.style   | Object - override default tree node css |
+| row.child   | Object - override style of `<div>` into the `<li>` row (e.g. you can manage the height of the row)<br>Keys:<br>- `style`: css style applied when the node is not selected<br>- `class`: class applied when the node is not selected<br>- `active.style`: css style applied when the node is selected<br>- `active.class`: class applied when the node is selected |
+| rowIndent   | Object - override style of `<ul>`  (e.g. you can manage the child node indent) |
+| expanded    | Object - contains the class of the expanded icon |
+| addNode     | Object - contains the class and the style of the addNode button<br>Keys:<br>- `class`: addNode icon class, required to display the icon<br>- `style`: addNode icon style |
+| editNode    | Object - contains the class and the style of the editNode button<br>Keys:<br>- `class`:  editNode icon class, required to display the icon<br>- `style`: editNode icon style |
+| deleteNode  | Object - contains the class and the style of the deleteNode button<br>Keys:<br>- `class`:  deleteNode icon class, required to display the icon<br>- `style`: deleteNode icon style |
+| selectIcon  | Object - contains the class and the style for the select node icon<br>Keys:<br>- `style`: unselected icon style<br>- `class`: unselected icon class, required to display the icon<br>- `active.style`: selected icon style<br>- `active.class`: selected icon class, required to display the icon |
+| text        | Object - contains the class and the style for the node's text<br>Keys:<br>- `style`: css style applied when the node is not selected<br>- `class`: class always applied to the text<br>- `active.style`: css style applied when the node is selected |
 
 #### Options
 ##### Tree options
