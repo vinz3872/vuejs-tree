@@ -2,9 +2,10 @@
   <li
     class="node"
     :data-id="node.id"
-    :style="styles.row">
-    <div class="row_data"
-      :style="styles.row.child"
+    :style="styles.row.style">
+    <div
+      :class="['row_data', selected ? styles.row.child.active.class: styles.row.child.class]"
+      :style="selected ? styles.row.child.active.style : styles.row.child.style"
       @click="toggleEvent('selected', node)">
       <span @click.stop="options.events.expanded.state == true && node.nodes != undefined && node.nodes.length > 0 && toggleEvent('expanded', node)">
         <i
@@ -109,10 +110,21 @@ export default {
     return {
       styles: {
         row: {
-          width: '500px',
-          cursor: 'pointer',
+          style: {
+            width: '500px',
+            cursor: 'pointer'
+          },
           child: {
-            height: '35px'
+            class: '',
+            style: {
+              height: '35px'
+            },
+            active: {
+              class: '',
+              style: {
+                height: '35px'
+              }
+            }
           }
         },
         rowIndent: {

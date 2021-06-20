@@ -66,10 +66,19 @@ export default {
           textAlign: 'left'
         },
         row: {
-          width: '500px',
-          cursor: 'pointer',
+          style: {
+            width: '500px',
+            cursor: 'pointer'
+          },
           child: {
-            height: '35px'
+            style: {
+              height: '35px'
+            },
+            active: {
+              style: {
+                height: '35px'
+              }
+            }
           }
         },
         text: {
