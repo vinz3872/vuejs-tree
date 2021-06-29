@@ -88,14 +88,6 @@ export default class Tree extends Vue {
 
   // Public functions
 
-  // Reassign the nodes, used to force the re-render of the tree
-  forceRender (nodes: NodeData[]) {
-    this.nodes = []
-    this.$nextTick(() => {
-      this.nodes = nodes
-    })
-  }
-
   // Find the ancestors ids of a node
   findNodePath (nodeId: string, maxDepth = 9999): string[] {
     return this.recFindNodePath(nodeId, this.nodes, 1, maxDepth)
