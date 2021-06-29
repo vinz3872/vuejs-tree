@@ -146,40 +146,25 @@ export default class App extends Vue {
   mounted () {
     console.log('App mounted')
     this.checkNode('3')
-    // this.expandNode('3')
+    this.expandNode('3')
     this.getTreeVisibleNodes()
-    // this.selectNode('6')
-    // this.collapseNode('1')
+    this.selectNode('6')
   }
 
   getTreeVisibleNodes () {
-    console.log(`expanded nodes: ${(this.$refs['my-tree']! as any).getCheckedNodes('id')}`)
-    // console.log(`expanded nodes: ${(this.$refs['my-tree']! as any).getExpandedNodes()}`)
-    // console.log(`visible nodes: ${(this.$refs['my-tree']! as any).getVisibleNodes()}`)
+    console.log(`visible nodes: ${(this.$refs['my-tree']! as any).getVisibleNodes()}`)
   }
 
   selectNode (nodeId: string) {
-    console.log(`checked nodes: ${(this.$refs['my-tree'] as any).selectNode(nodeId, 9999)}`)
-    // console.log(`checked nodes: ${(this.$refs['my-tree'] as any).deselectAllNodes(nodeId)}`)
+    (this.$refs['my-tree'] as any).selectNode(nodeId)
   }
 
   checkNode (nodeId: string) {
-    console.log(`checked nodes: ${(this.$refs['my-tree'] as any).checkNode(nodeId)}`)
-    // console.log(`checked all nodes: ${(this.$refs['my-tree'] as any).checkAllNodes()}`)
-    // console.log(`unchecked nodes: ${(this.$refs['my-tree'] as any).uncheckNode(nodeId)}`)
-    // console.log(`unchecked all nodes: ${(this.$refs['my-tree'] as any).uncheckAllNodes()}`)
+    (this.$refs['my-tree'] as any).checkNode(nodeId)
   }
 
   expandNode (nodeId: string) {
-    console.log(nodeId)
-    // console.log(`expand all nodes: ${(this.$refs['my-tree'] as any).expandAllNodes()}`)
-    console.log(`expand nodes: ${(this.$refs['my-tree'] as any).expandNode(nodeId)}`)
-  }
-
-  collapseNode (nodeId: string) {
-    console.log(nodeId)
-    console.log(`expand all nodes: ${(this.$refs['my-tree'] as any).collapseAllNodes()}`)
-    // console.log(`expand nodes: ${(this.$refs['my-tree'] as any).collapseNode(nodeId)}`)
+    (this.$refs['my-tree'] as any).expandNode(nodeId)
   }
 
   myCheckedFunction (nodeId: any, state: boolean) {
