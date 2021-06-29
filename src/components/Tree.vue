@@ -25,6 +25,7 @@ import { reactive } from 'vue'
 import { Options, Vue } from 'vue-class-component'
 import { NodeData, NodesProperties, TreeCustomStyles, TreeCustomOptions } from './interface'
 import TreeRow from './TreeRow.vue'
+import { copyOptions, recCallNodes } from '@/components/helper'
 
 @Options({
   components: {
@@ -76,13 +77,13 @@ export default class Tree extends Vue {
     }
   })
 
-  disabledState = { expanded: 'expandable', checked: 'checkable', selected: 'selectable' }
+  // disabledState = { expanded: 'expandable', checked: 'checkable', selected: 'selectable' }
   selectedNodeData = reactive({ id: '' })
   force = true
 
   mounted () {
-    this.copyOptions(this.customOptions, this.options)
-    this.copyOptions(this.customStyles, this.styles)
+    copyOptions(this.customOptions, this.options)
+    copyOptions(this.customStyles, this.styles)
   }
 
   // Public functions
@@ -135,12 +136,12 @@ export default class Tree extends Vue {
 
   // Check all nodes
   checkAllNodes () {
-    this.recCallNodes(true, 'checked', this.nodes)
+    recCallNodes(true, 'checked', this.nodes)
   }
 
   // Uncheck all nodes
   uncheckAllNodes () {
-    this.recCallNodes(false, 'checked', this.nodes)
+    recCallNodes(false, 'checked', this.nodes)
   }
 
   // Deselect all nodes (the one selected)
@@ -154,24 +155,24 @@ export default class Tree extends Vue {
 
   // Expand all nodes
   expandAllNodes () {
-    this.recCallNodes(true, 'expanded', this.nodes)
+    recCallNodes(true, 'expanded', this.nodes)
   }
 
   // Collapse all nodes
   collapseAllNodes () {
-    this.recCallNodes(false, 'expanded', this.nodes)
+    recCallNodes(false, 'expanded', this.nodes)
   }
 
   // Expand a node
   expandNode (nodeId: string, depth = 9999) {
     const arrIds = this.findNodePath(nodeId, depth)
-    this.recCallNodes(true, 'expanded', this.nodes, arrIds)
+    recCallNodes(true, 'expanded', this.nodes, arrIds)
   }
 
   // Collapse a node
   collapseNode (nodeId: string, depth = 9999) {
     const arrIds = this.findNodePath(nodeId, depth)
-    this.recCallNodes(false, 'expanded', this.nodes, arrIds)
+    recCallNodes(false, 'expanded', this.nodes, arrIds)
   }
 
   // Select a node
@@ -212,19 +213,6 @@ export default class Tree extends Vue {
   }
 
   // Private functions
-
-  // Used to merge the tree options/styles with customOptions/customStyles
-  copyOptions (src: any, dst: any) {
-    for (var key in src) {
-      if (!dst[key]) {
-        dst[key] = src[key]
-      } else if (typeof (src[key]) === 'object') {
-        this.copyOptions(src[key], dst[key])
-      } else {
-        dst[key] = src[key]
-      }
-    }
-  }
 
   // Recursive function of findNodePath
   recFindNodePath (nodeId: string, nodes: NodeData[], depth: number, maxDepth: number): string[] {
@@ -313,36 +301,12 @@ export default class Tree extends Vue {
     }
   }
 
-  // Recursive function to change node's state
-  recCallNodes (state: boolean, event: string, nodes: NodeData[], pathIds: string[] = []) {
-    const targetId = pathIds.shift()
-    nodes.forEach((node) => {
-      if (targetId !== undefined && targetId !== node.id) {
-        return
-      }
-      // Stop the recursion if the node's event is disabled
-      const disabledStateKey = (this.disabledState as any)[event]
-      if (disabledStateKey && node[disabledStateKey] === false) {
-        return
-      }
-      node.state[event] = state
-      if (targetId === node.id && pathIds.length === 0) {
-        return
-      }
-      if (node.nodes) {
-        this.recCallNodes(state, event, node.nodes, pathIds)
-      }
-    })
-  }
-
   // Used by checkNode and uncheckNode
   doCheckNode (nodeId: string, depth: number, state: boolean) {
     const node = this.findNode(nodeId, depth)
     if (node) {
       node.state.checked = state
-      if (node.nodes) {
-        this.recCallNodes(state, 'checked', node.nodes)
-      }
+      recCallNodes(state, 'checked', node.nodes)
     }
   }
 

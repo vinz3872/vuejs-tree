@@ -96,7 +96,8 @@
 <script lang="ts">
 import { reactive } from 'vue'
 import { Options, Vue } from 'vue-class-component'
-import { NodeData, TreeRowCustomStyles, TreeRowCustomOptions, CallNodeArgs } from './interface'
+import { NodeData, TreeRowCustomStyles, TreeRowCustomOptions } from './interface'
+import { copyOptions, recCallNodes } from '@/components/helper'
 
 @Options({
   props: {
@@ -217,13 +218,14 @@ export default class Tree extends Vue {
   }
 
   mounted () {
-    this.copyOptions(this.customOptions, this.options)
-    this.copyOptions(this.customStyles, this.styles)
+    copyOptions(this.customOptions, this.options)
+    copyOptions(this.customStyles, this.styles)
     if (this.node.checkable !== undefined) this.options.events.checked.state = this.node.checkable
     if (this.node.selectable !== undefined) this.options.events.selected.state = this.node.selectable
     if (this.node.expandable !== undefined) this.options.events.expanded.state = this.node.expandable
   }
 
+  // Handle TreeRow events
   toggleEvent (eventType: string, node: NodeData) {
     const event = (this.options.events as any)[eventType]
     if (eventType === 'editableName' && event.calledEvent) {
@@ -234,6 +236,7 @@ export default class Tree extends Vue {
     }
   }
 
+  // Default functions for TreeRow event, can be overwritten in CustomOptions
   defaultEventFn (eventType: string): any {
     if (eventType === 'expanded') {
       return this.toggleExpanded
@@ -246,128 +249,40 @@ export default class Tree extends Vue {
     return null
   }
 
-  toggleExpanded (node: NodeData, instance: any) {
+  // Default tree behavior when node is expanded
+  toggleExpanded (node: NodeData) {
     this.node.state.expanded = !this.node.state.expanded
-    this.$nextTick(() => {
-      this.$emit('emitNodeExpanded', node, this.node.state.expanded)
-    })
+    this.emitNodeExpanded(node, this.node.state.expanded)
   }
 
-  toggleSelected (node: NodeData, instance: any) {
+  // Default tree behavior when node is selected
+  toggleSelected (node: NodeData) {
     this.node.state.selected = !this.node.state.selected
-    this.$emit('emitNodeSelected', node)
+    this.emitNodeSelected(node)
   }
 
-  toggleChecked (node: NodeData, instance: any) {
-    this.node.state.checked = !this.node.state.checked
-    this.$nextTick(() => {
-      this.callNodesChecked(this.node.state.checked)
-      this.$emit('emitNodeChecked', node)
-    })
+  // Default tree behavior when node is checked
+  toggleChecked (node: NodeData) {
+    const state = !this.node.state.checked
+    this.node.state.checked = state
+    recCallNodes(state, 'checked', this.node.nodes)
+    this.$emit('emitNodeChecked', node)
+    this.emitNodeChecked(node)
   }
 
-  // redirect the event toward the Tree component
+  // Redirect the event toward the Tree component
   emitNodeSelected (nodeSelected: NodeData) {
     this.$emit('emitNodeSelected', nodeSelected)
   }
 
-  // redirect the event toward the Tree component
+  // Redirect the event toward the Tree component
   emitNodeExpanded (node: NodeData, state: boolean) {
     this.$emit('emitNodeExpanded', node, state)
   }
 
-  // redirect the event toward the Tree component
+  // Redirect the event toward the Tree component
   emitNodeChecked (nodeChecked: NodeData) {
     this.$emit('emitNodeChecked', nodeChecked)
-  }
-
-  recCallNodes (state: boolean, event: string, nodes: NodeData[]) {
-    nodes.forEach((node) => {
-      node.state[event] = state
-      if (node.nodes) {
-        this.recCallNodes(state, event, node.nodes)
-      }
-    })
-  }
-
-  callNodesChecked (state: boolean) {
-    this.node.state.checked = state
-    if (this.node.nodes) {
-      this.recCallNodes(state, 'checked', this.node.nodes)
-    }
-  }
-
-  callNodesDeselect () {
-    this.node.state.selected = false
-    if (this.node.nodes) {
-      this.recCallNodes(false, 'selected', this.node.nodes)
-    }
-  }
-
-  callSpecificChild (arrIds: string[], fname: string, args: CallNodeArgs) {
-    Object.keys(this.$refs).forEach(ref => {
-      const child = this.$refs[ref]
-      if (child) {
-        (child as any)[fname](args)
-      }
-    })
-  }
-
-  callNodeChecked (args: CallNodeArgs) {
-    const arrIds = args.arrIds
-    const value = args.value
-    if (arrIds[arrIds.length - 1] === this.node.id) {
-      this.node.state.checked = value
-      this.callNodesChecked(this.node.state.checked)
-    } else {
-      this.node.state.expanded = true
-      this.$nextTick(() => {
-        this.callSpecificChild(arrIds, 'callNodeChecked', args)
-      })
-    }
-  }
-
-  callNodeSelected (args: CallNodeArgs) {
-    const arrIds = args.arrIds
-    const value = args.value
-    if (arrIds[arrIds.length - 1] === this.node.id) {
-      this.node.state.selected = value
-    } else {
-      this.node.state.expanded = true
-      this.$nextTick(() => {
-        this.callSpecificChild(arrIds, 'callNodeSelected', args)
-      })
-    }
-  }
-
-  callNodeExpanded (args: CallNodeArgs) {
-    const arrIds = args.arrIds
-    const value = args.value
-    if (value === false && this.node.state.expanded === false) return
-    if (arrIds[arrIds.length - 1] !== this.node.id) {
-      if (value === true) {
-        this.node.state.expanded = true
-        this.$nextTick(() => {
-          this.callSpecificChild(arrIds, 'callNodeExpanded', args)
-        })
-      } else {
-        this.callSpecificChild(arrIds, 'callNodeExpanded', args)
-      }
-    } else {
-      this.node.state.expanded = value
-    }
-  }
-
-  copyOptions (src: any, dst: any) {
-    for (var key in src) {
-      if (!dst[key]) {
-        dst[key] = src[key]
-      } else if (typeof (src[key]) === 'object') {
-        this.copyOptions(src[key], dst[key])
-      } else {
-        dst[key] = src[key]
-      }
-    }
   }
 }
 </script>

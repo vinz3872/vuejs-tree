@@ -22,11 +22,6 @@ export interface EventParams {
   calledEvent?: string|null;
 }
 
-export interface CallNodeArgs {
-  arrIds: string[];
-  value: boolean;
-}
-
 export interface TreeCustomStyles {
   tree: {
     style: {
