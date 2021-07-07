@@ -2,7 +2,7 @@
   <li
     class="node"
     :data-id="node.id"
-    :style="styles.row.style">
+    :style="rowChildStyle">
     <div
       :class="['row_data', selected ? styles.row.child.active.class: styles.row.child.class]"
       :style="selected ? styles.row.child.active.style : styles.row.child.style"
@@ -215,6 +215,14 @@ export default {
       this.node.state.selected = this.selected
     }
   },
+  computed: {
+    rowChildStyle () {
+      if (Object.keys(this.styles.row).length > 2) {
+        return this.styles.row
+      }
+      return this.styles.row.style
+    }
+  },
   mounted () {
     this.copyOptions(this.customOptions, this.options)
     this.copyOptions(this.customStyles, this.styles)
@@ -349,11 +357,11 @@ export default {
     copyOptions (src, dst) {
       for (var key in src) {
         if (!dst[key]) {
-          dst[key] = src[key]
+          this.$set(dst, key, src[key])
         } else if (typeof (src[key]) === 'object') {
           this.copyOptions(src[key], dst[key])
         } else {
-          dst[key] = src[key]
+          this.$set(dst, key, src[key])
         }
       }
     }

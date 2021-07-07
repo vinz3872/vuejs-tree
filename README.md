@@ -2,6 +2,7 @@ VueJS Tree
 ==========
 
 [![npm version](https://img.shields.io/npm/v/vuejs-tree.svg?style=flat)](https://www.npmjs.com/package/vuejs-tree)
+[![npm version](https://img.shields.io/npm/dependency-version/vuejs-tree/vue?style=flat)](https://www.npmjs.com/package/vue)
 
 A highly customizable vuejs tree viewer
 
