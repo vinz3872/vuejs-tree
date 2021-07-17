@@ -13,12 +13,12 @@ describe('Data', () => {
       propsData: propsData
     })
     const tree = wrapper.vm
-    expect(tree.selectedNode).toBeNull()
-    expect(tree.force).toBeTruthy()
-    expect(tree.styles.tree).toHaveProperty('height', 'auto');
-    expect(tree.styles.tree).toHaveProperty('maxHeight', '500px');
-    expect(tree.styles.tree).toHaveProperty('overflowY', 'scroll');
-    expect(tree.styles.tree).toHaveProperty('display', 'inline-block');
+    expect(tree.selectedNodeData.id).toEqual('');
+    expect(tree.force).toBeTruthy();
+    expect(tree.styles.tree.style).toHaveProperty('height', 'auto');
+    expect(tree.styles.tree.style).toHaveProperty('maxHeight', '500px');
+    expect(tree.styles.tree.style).toHaveProperty('overflowY', 'scroll');
+    expect(tree.styles.tree.style).toHaveProperty('display', 'inline-block');
     expect(tree.options.treeEvents.expanded).toHaveProperty('state', false);
     expect(tree.options.treeEvents.expanded).toHaveProperty('fn', null);
     expect(tree.options.treeEvents.collapsed).toHaveProperty('state', false);
@@ -61,12 +61,12 @@ describe('Data', () => {
       propsData: propsData
     })
     const tree = wrapper.vm
-    expect(tree.selectedNode).toBeNull();
+    expect(tree.selectedNodeData.id).toEqual('');
     expect(tree.force).toBeTruthy();
-    expect(tree.styles.tree).toHaveProperty('height', customStyles.tree.height);
-    expect(tree.styles.tree).toHaveProperty('maxHeight', customStyles.tree.maxHeight);
-    expect(tree.styles.tree).toHaveProperty('overflowY', customStyles.tree.overflowY);
-    expect(tree.styles.tree).toHaveProperty('display', customStyles.tree.display);
+    expect(tree.styles.tree.style).toHaveProperty('height', customStyles.tree.style.height);
+    expect(tree.styles.tree.style).toHaveProperty('maxHeight', customStyles.tree.style.maxHeight);
+    expect(tree.styles.tree.style).toHaveProperty('overflowY', customStyles.tree.style.overflowY);
+    expect(tree.styles.tree.style).toHaveProperty('display', customStyles.tree.style.display);
     expect(tree.options.treeEvents.expanded).toHaveProperty('state', true);
     expect(tree.options.treeEvents.expanded).toHaveProperty('fn', fn);
     expect(tree.options.treeEvents.collapsed).toHaveProperty('state', true);

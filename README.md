@@ -2,6 +2,9 @@ VueJS Tree
 ==========
 
 [![npm version](https://img.shields.io/npm/v/vuejs-tree.svg?style=flat)](https://www.npmjs.com/package/vuejs-tree)
+[![npm version](https://img.shields.io/github/package-json/dependency-version/scalia/vuejs-tree/vue/vue3?style=flat)](https://www.npmjs.com/package/vue)
+
+Vue2 version [here](https://github.com/scalia/vuejs-tree/tree/vue2)
 
 A highly customizable vuejs tree viewer
 
@@ -124,9 +127,9 @@ The Following properties define a node level css and behavior.
 | selectable       | Boolean --> Optional, default: true  | Used to enable or disable the node's select event                                                                                             |
 | expandable       | Boolean --> Optional, default: true  | Used to enable or disable the node's expand event                                                                                             |
 | state            |                                            | nodes's state                                                                                              |
-| state.checked  | Boolean --> Optional, default: false  | Change the node's default state  (at initialize)                                                                                              |
-| state.selected | Boolean --> Optional, default: false  | Change the node's default state  (at initialize)                                                                                                            |
-| state.expanded | Boolean --> Optional, default: false  | Change the node's default state  (at initialize)                                                                                                            |
+| state.checked  | Boolean --> Mandatory, default: false  | Change the node's default state  (at initialize)                                                                                              |
+| state.selected | Boolean --> Mandatory, default: false  | Change the node's default state  (at initialize)                                                                                                            |
+| state.expanded | Boolean --> Mandatory, default: false  | Change the node's default state  (at initialize)                                                                                                            |
 | nodes            | Object --> Optional                    | Used to display the node's children. *Look above for a structure example*                                                                         |
 
 ## Options / Styles
@@ -139,11 +142,13 @@ computed: {
   myCustomStyles() {
     return {
       tree: {
-        height: 'auto',
-        maxHeight: '300px',
-        overflowY: 'visible',
-        display: 'inline-block',
-        textAlign: 'left'
+        style: {
+          height: 'auto',
+          maxHeight: '300px',
+          overflowY: 'visible',
+          display: 'inline-block',
+          textAlign: 'left'
+        }
       },
       row: {
         style: {
@@ -195,6 +200,7 @@ computed: {
       },
       text: {
         style: {},
+        class: 'capitalize',
         active: {
           style: {
             'font-weight': 'bold',
