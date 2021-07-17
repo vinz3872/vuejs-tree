@@ -77,7 +77,6 @@ export default class Tree extends Vue {
     }
   })
 
-  // disabledState = { expanded: 'expandable', checked: 'checkable', selected: 'selectable' }
   selectedNodeData = reactive({ id: '' })
   force = true
 
