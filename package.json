@@ -8,8 +8,8 @@
     "tree",
     "custom"
   ],
-  "repository": "git@github.com:scalia/vuejs-tree.git",
-  "bugs": "git@github.com:scalia/vuejs-tree/issues",
+  "repository": "git@github.com:vinz3872/vuejs-tree.git",
+  "bugs": "git@github.com:vinz3872/vuejs-tree/issues",
   "author": "vinz3872 <vinz3872@gmail.com>",
   "license": "MIT",
   "scripts": {

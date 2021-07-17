@@ -2,14 +2,14 @@ VueJS Tree
 ==========
 
 [![npm version](https://img.shields.io/npm/v/vuejs-tree.svg?style=flat)](https://www.npmjs.com/package/vuejs-tree)
-[![npm version](https://img.shields.io/github/package-json/dependency-version/scalia/vuejs-tree/vue/vue3?style=flat)](https://www.npmjs.com/package/vue)
+[![npm version](https://img.shields.io/github/package-json/dependency-version/vinz3872/vuejs-tree/vue?style=flat)](https://www.npmjs.com/package/vue)
 
-Vue2 version [here](https://github.com/scalia/vuejs-tree/tree/vue2)
+Vue2 version [here](https://github.com/vinz3872/vuejs-tree/tree/vue2)
 
 A highly customizable vuejs tree viewer
 
 
-![tree](https://raw.githubusercontent.com/scalia/vuejs-tree/7b6d80f7362cdaf0da9eba9997a9b132c5b99e7b/images/tree.png)
+![tree](https://raw.githubusercontent.com/vinz3872/vuejs-tree/7b6d80f7362cdaf0da9eba9997a9b132c5b99e7b/images/tree.png)
 
 #### Example
 
