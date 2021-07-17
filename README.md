@@ -64,25 +64,31 @@ data: {
   treeDisplayData: [
     {
       text: 'Root 1',
+      state: { checked: false, selected: false, expanded: false },
       nodes: [
         {
           text: 'Child 1',
+          state: { checked: false, selected: false, expanded: false },
           nodes: [
             {
-              text: 'Grandchild 1'
+              text: 'Grandchild 1',
+              state: { checked: false, selected: false, expanded: false }
             },
             {
-              text: 'Grandchild 2'
+              text: 'Grandchild 2',
+              state: { checked: false, selected: false, expanded: false }
             }
           ]
         },
         {
-          text: 'Child 2'
+          text: 'Child 2',
+          state: { checked: false, selected: false, expanded: false }
         }
       ]
     },
     {
-      text: 'Root 2'
+      text: 'Root 2',
+      state: { checked: false, selected: false, expanded: false }
     }
   ]
 }
@@ -154,7 +160,7 @@ computed: {
         style: {
           width: '500px',
           cursor: 'pointer'
-        }
+        },
         child: {
           class: '',
           style: {
