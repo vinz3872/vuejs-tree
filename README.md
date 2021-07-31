@@ -13,7 +13,7 @@ A highly customizable vuejs tree viewer
 
 #### Example
 
-[codesandbox](https://codesandbox.io/s/vue-template-lmbyx)
+[codesandbox](https://codesandbox.io/s/vuejs-tree-sandbox-v3x-lmbyx)
 
 ## Getting Started
 
