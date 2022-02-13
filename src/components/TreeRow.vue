@@ -269,7 +269,6 @@ export default class Tree extends Vue {
     const state = !this.node.state.checked
     this.node.state.checked = state
     recCallNodes(state, 'checked', this.node.nodes)
-    this.$emit('emitNodeChecked', node)
     this.emitNodeChecked(node)
   }
 
