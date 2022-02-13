@@ -43,7 +43,7 @@
       <span
         v-if="options.addNode.state == true"
         @click.stop="options.addNode.fn(node)"
-        :class="style.iconParent.class">
+        :class="styles.iconParent.class">
         <i
           v-bind:class="[{'icon-hover': options.addNode.appearOnHover}, styles.addNode.class]"
           :style="styles.addNode.style">
@@ -52,7 +52,7 @@
       <span
         v-if="options.editNode.state == true"
         @click.stop="options.editNode.fn(node)"
-        :class="style.iconParent.class">
+        :class="styles.iconParent.class">
         <i
         v-bind:class="[{'icon-hover': options.editNode.appearOnHover}, styles.editNode.class]"
         :style="styles.editNode.style">
@@ -61,7 +61,7 @@
       <span
         v-if="options.deleteNode.state == true"
         @click.stop="options.deleteNode.fn(node)"
-        :class="style.iconParent.class">
+        :class="styles.iconParent.class">
         <i
         v-bind:class="[{'icon-hover': options.deleteNode.appearOnHover}, styles.deleteNode.class]"
         :style="styles.deleteNode.style">
