@@ -1,7 +1,7 @@
 {
   "name": "vuejs-tree",
   "description": "A highly customizable vuejs tree",
-  "version": "3.0.1",
+  "version": "3.0.2",
   "main": "dist/vuejs-tree.common.js",
   "keywords": [
     "vuejs",
