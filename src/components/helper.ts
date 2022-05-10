@@ -24,14 +24,12 @@ export const recCallNodes = (state: boolean, event: string, nodes: NodeData[]|un
     if (targetId !== undefined && targetId !== node.id) {
       return
     }
-    // Stop the recursion if the node's event is disabled
     const disabledStateKey = (disabledState as any)[event]
-    if (disabledStateKey && node[disabledStateKey] === false) {
-      return
-    }
-    node.state[event] = state
     if (targetId === node.id && pathIds.length === 0) {
+      node.state[event] = state
       return
+    } else if (disabledStateKey && node[disabledStateKey] !== false) {
+      node.state[event] = state
     }
     recCallNodes(state, event, node.nodes, pathIds)
   })

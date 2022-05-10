@@ -162,8 +162,10 @@ export default class Tree extends Vue {
 
   // Collapse a node
   collapseNode (nodeId: string, depth = 9999) {
-    const arrIds = this.findNodePath(nodeId, depth)
-    recCallNodes(false, 'expanded', this.nodes, arrIds)
+    const node = this.findNode(nodeId, depth)
+    if (node) {
+      node.state.expanded = false
+    }
   }
 
   // Select a node
